@@ -40,15 +40,15 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
     
     If you're already using Cocoapods, goto `ios` folder from your project and specify the below pod on a single line inside your target block in a Podfile
        
-```
+       ```
        pod 'react-native-axa-mobile-sdk', path: '../node_modules/react-native-axa-mobile-sdk'
-```
+       ```
         
     Then, run the following command using the command prompt from the `ios` folder of your project
 
-```
+        ```
         pod install
-```
+        ```
     
     * Drag & Drop the downloaded `xxx_camdo.plist` file into the Supporting files
 
@@ -68,15 +68,15 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
 
     If you're already using Cocoapods, goto `ios` folder from your project and specify the below pod on a single line inside your target block in a Podfile
    
-```
+   ```
    pod 'react-native-axa-mobile-sdk', path: '../node_modules/react-native-axa-mobile-sdk'
-```
+   ```
+    
+    Then, run the following command using the command prompt from the `ios` folder of your project
 
-Then, run the following command using the command prompt from the `ios` folder of your project
-
-```
+    ```
     pod install
-```
+    ```
 
 6. Drag & Drop the downloaded `xxx_camdo.plist` file into the Supporting files
 </details>
@@ -89,14 +89,14 @@ Then, run the following command using the command prompt from the `ios` folder o
   - Add `import com.reactlibrary.ReactNativeAxaMobileSdkPackage;` to the imports at the top of the file
   - Add `new ReactNativeAxaMobileSdkPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
-```
+      ```
       include ':react-native-axa-mobile-sdk'
       project(':react-native-axa-mobile-sdk').projectDir = new File(rootProject.projectDir,     '../node_modules/react-native-axa-mobile-sdk/android')
-```
+      ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-```
+      ```
       compile project(':react-native-test-sdk')
-```
+      ```
 </details>
 
 
