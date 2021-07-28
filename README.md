@@ -1,12 +1,10 @@
 # ReactNativeAxaMobileSdk
 **React Native Axa Mobile Sdk** is a modern, well-supported, and cross-platform sdk for App Experience Analytics that provides deep insights into the performance, user experience, crash, and log analytics of apps.
 
-CA App Experience Analytic native SDK's react native supplement for using custom metrics
-
 ## Platforms Supported
 
-- [x] iOS
-- [x] Android
+-  iOS
+-  Android
 
 ## Getting started
 [DX App Experience Analytics](https://www.broadcom.com/info/aiops/app-analytics)
@@ -15,10 +13,10 @@ Check out our [documentation](https://techdocs.broadcom.com/content/broadcom/tec
 
 
 ## Requirements
-- [x] iOS
+-  iOS
     1. Xcode 11 or higher
     2. iOS 8.0 or higher
-- [x] Android
+-  Android
 
 ## Installation
 
@@ -40,15 +38,15 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
     
     If you're already using Cocoapods, goto `ios` folder from your project and specify the below pod on a single line inside your target block in a Podfile
        
-       ```
-       pod 'react-native-axa-mobile-sdk', path: '../node_modules/react-native-axa-mobile-sdk'
-       ```
+    ```
+    pod 'react-native-axa-mobile-sdk', path: '../node_modules/react-native-axa-mobile-sdk'
+      ``` 
         
     Then, run the following command using the command prompt from the `ios` folder of your project
 
-        ```
-        pod install
-        ```
+    ```
+    pod install
+    ```
     
     * Drag & Drop the downloaded `xxx_camdo.plist` file into the Supporting files
 
@@ -158,14 +156,7 @@ Follow these steps to updgrade the `react native axa mobile sdk` in your project
 ```javascript
 import ReactNativeAxaMobileSdk from 'react-native-axa-mobile-sdk';
 
-// TODO: What to do with the module?
-ReactNativeAxaMobileSdk;
-
-???
 const AXASDK = NativeModules.ReactNativeAxaMobileSdk;
-
-TODO: Find the proper method to assign a variable to use ReactNativeAxaMobileSdk from the package.
-In my testing, the above line still works but seems awkward.
 ```
   
   

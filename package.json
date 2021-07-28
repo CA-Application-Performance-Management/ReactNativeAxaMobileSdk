@@ -1,7 +1,7 @@
 {
   "name": "react-native-axa-mobile-sdk",
   "title": "React Native AXA Mobile Sdk",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.3",
   "description": "CA App Experience Analytic native SDK's react native supplement for using custom metrics",
   "main": "index.js",
   "files": [
@@ -13,7 +13,9 @@
     "react-native-axa-mobile-sdk.podspec"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "release:major": "changelog -M && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && yarn version --major && git push origin && git push origin --tags",
+    "release:minor": "changelog -m && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && yarn version --minor && git push origin && git push origin --tags",
+    "release:patch": "changelog -p && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && yarn version --patch && git push origin && git push origin --tags"
   },
   "repository": {
     "type": "git",

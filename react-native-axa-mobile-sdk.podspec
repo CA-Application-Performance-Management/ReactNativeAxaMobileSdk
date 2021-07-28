@@ -11,11 +11,10 @@ Pod::Spec.new do |s|
   s.description  = <<-DESC
                   CA App Experience Analytic native SDK's react native supplement for using custom metrics
                    DESC
-  s.homepage     = "https://github.com/CA-Application-Performance-Management/ReactNativeAxaMobileSdk"
+  s.homepage     = "https://techdocs.broadcom.com/content/broadcom/techdocs/us/en/ca-enterprise-software/it-operations-management/app-experience-analytics-saas/SaaS/configuring/collect-data-from-ios-applications.html"
   # brief license entry:
-   s.license    = { :type => "Apache License 2.0", :file => "LICENSE" }
-  s.authors      = { "Your Name" => "yourname@email.com" }
-  s.platforms    = { :ios => "9.0" }
+  s.license    = { :type => "Apache License 2.0", :file => "LICENSE" }
+  s.authors      = { "CA Technologies (A Broadcom Company)" => "www.broadcom.com" }
   s.source       = { :git => "https://github.com/CA-Application-Performance-Management/ReactNativeAxaMobileSdk.git", :tag => "#{s.version}" }
 
   s.preserve_paths = 'LICENSE', 'README.md', 'package.json', 'index.js'
