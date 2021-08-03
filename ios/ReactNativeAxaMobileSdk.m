@@ -201,7 +201,7 @@ RCT_EXPORT_METHOD(deviceId:(RCTResponseSenderBlock)callback)
 RCT_EXPORT_METHOD(customerId:(RCTResponseSenderBlock)callback)
 {
     NSString *customerID = [CAMDOReporter customerId];
-    callback(@[customerID]);
+    callback(@[RCTNullIfNil(customerID)]);
 }
 
 /**
@@ -603,9 +603,9 @@ RCT_EXPORT_METHOD(logTextMetric:(NSString *) metricName withValue:(NSString *) m
  * code and localizedDescription.
  *
  */
-RCT_EXPORT_METHOD(logNumericMetric:(NSString *) metricName withValue:(double) metricValue withAttributes:(nullable NSDictionary *) attributes completionHandler:(RCTResponseSenderBlock) completionBlock)
+RCT_EXPORT_METHOD(logNumericMetric:(NSString *) metricName withValue:(NSString *) metricValue withAttributes:(nullable NSDictionary *) attributes completionHandler:(RCTResponseSenderBlock) completionBlock)
 {
-    [CAMDOReporter logNumericMetric: metricName withValue: metricValue withAttributes: (NSMutableDictionary *)attributes completionHandler: ^(BOOL completed, NSError *error) {
+    [CAMDOReporter logNumericMetric: metricName withValue: [metricValue doubleValue] withAttributes: (NSMutableDictionary *)attributes completionHandler: ^(BOOL completed, NSError *error) {
       completionBlock(@[@(completed), CAMAAErrorString(error)]);
     }];
 }
