@@ -266,7 +266,7 @@ RCT_EXPORT_METHOD(isInPrivateZone:(RCTResponseSenderBlock)callback)
 /**
  * Use this API to get the SDK computed APM header in key value format.
  * @param callback is a function which expects an (array of alternating key, value pairs)
- * Returns null if apm header cannot be computed
+ * Returns an empty string if apm header cannot be computed
  *
  */
 RCT_EXPORT_METHOD(getAPMHeader:(RCTResponseSenderBlock)callback)
@@ -392,6 +392,7 @@ RCT_EXPORT_METHOD(stopApplicationTransactionWithName:(NSString *) transactionNam
       completionBlock(@[@(completed), CAMAAErrorString(error)]);
     }];
 }
+
 /**
  * Use this API to stop a transaction with a specific name, with failure reason
  * Completion block can be used to verify whether transaction is stopped successfully or not
@@ -538,7 +539,7 @@ RCT_EXPORT_METHOD(ignoreViews:(NSSet *) viewNames)
 
 
 /**
- * Use this API to determine of automatic screenshots are enabled by policy.
+ * Use this API to determine if automatic screenshots are enabled by policy.
  * @param callback is a function which expects a boolean value
  * Returns YES if screenshots are enabled by policy.  Otherwise returns NO
  */
@@ -628,4 +629,5 @@ RCT_EXPORT_METHOD(uploadEvents:(RCTResponseSenderBlock) callback)
       callback(@[RCTNullIfNil(response), CAMAAErrorString(error)]);
     }];
 }
+
 @end
