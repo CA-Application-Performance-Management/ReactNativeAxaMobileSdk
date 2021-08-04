@@ -450,7 +450,7 @@ RCT_EXPORT_METHOD(sendScreenShot:(NSString *) name withQuality:(CGFloat) quality
  * Error message will contain the error domain, a code, and a localized description.
  *
  */
-RCT_EXPORT_METHOD(viewLoaded:(NSString *) viewName loadTime:(CGFloat) loadTime screenShot:(BOOL) screenCapture completionHandler:(RCTResponseSenderBlock) callback)
+RCT_EXPORT_METHOD(viewLoaded:(NSString *) viewName loadTime:(CGFloat) loadTime completionHandler:(RCTResponseSenderBlock) callback)
 {
     [CAMDOReporter viewLoaded: viewName loadTime: loadTime completionHandler: ^(BOOL completed, NSError *error) {
         callback(@[@(completed), CAMAAErrorString(error)]);
