@@ -161,11 +161,9 @@ const AXASDK = NativeModules.ReactNativeAxaMobileSdk;
   
   
 ## APIs
-Individual APIs interact with the SDK to perform specific tasks and reading or setting information.  All APIs are asynchronous, and returning information is achieved using a callback or completion block.  The specifics can be found in the React Native documentation for [Android](https://reactnative.dev/docs/native-modules-android#callbacks) or [iOS](https://reactnative.dev/docs/native-modules-ios#callbacks) callbacks.
+Individual APIs interact with the SDK to perform specific tasks and reading or setting information.  All APIs are asynchronous, and returning information is achieved using a callback function or block.  The specifics can be found in the React Native documentation for [Android](https://reactnative.dev/docs/native-modules-android#callbacks) or [iOS](https://reactnative.dev/docs/native-modules-ios#callbacks) callbacks.
 
 A callback returns one or more value.
-
-A completionBlock always returns 2 values: completed: a boolean and errorString: an string value).
 
 Once you have assigned a variable or constant to the ReactNativeAxaMobileSdk module as shown in "Usage", calling individual APIs is as simple as:
 
@@ -173,11 +171,11 @@ Once you have assigned a variable or constant to the ReactNativeAxaMobileSdk mod
 AXASDK.individualAPI();
 AXASDK.individualAPI(argument1, argument2, ...);
 AXASDK.individualAPI(argument1, ..., callback);
-AXASDK.individualAPI(argument1, argument2, ..., completionBlock);
+AXASDK.individualAPI(argument1, argument2, ..., callback);
 
 ```
 
-Follow the examples in the API descriptions below for how to use the callback or completion blocks.
+Follow the examples in the API descriptions below for how to use the callbacks.  The examples presented use a block with parameters instead of a function.  Either format will work in practice.
 
 
 ### disableSDK()
@@ -247,7 +245,7 @@ AXASDK.getDeviceId((deviceId) => {
 Parameters:
 -  callback is a function which expects a string value
 
-If the customer Id is not set, this API returns an empty string.
+If the customer ID is not set, this API returns a null value.
 
 ```
 AXASDK.getCustomerId((customerId) => {
@@ -264,10 +262,10 @@ AXASDK.getCustomerId((customerId) => {
 <details><summary>Use this API to set the customer ID for this session.</summary>
 
 Parameters:
-- customerID is a string containing the customer Id
+- customerId is a string containing the customer ID
 - callback is a function which expects an (SDKError value)
 
-If an empty string is passed, the customer id is reset. An SDKError value is returned.
+If an empty string is passed, the customer ID is reset. An SDKError value is returned.
 
 ```
 var customerId = "New Customer"
@@ -295,6 +293,19 @@ AXASDK.setCustomerId(customerId, (SDKError) => {
 -   ErrorFailedToTakeScreenshot
 -   ErrorInvalidValuesPassed
 
+To retrieve these constants include the following code prior to use:
+```
+var AXASDK = NativeModules.ReactNativeAxaMobileSdk;
+
+// Set constants for SDKError
+const { ErrorNone }                        = AXASDK.getConstants();
+const { ErrorNoTransactionName }           = AXASDK.getConstants();
+const { ErrorTransactionInProgress }       = AXASDK.getConstants();
+const { ErrorFailedToTakeScreenshot }      = AXASDK.getConstants();
+const { ErrorInvalidValuesPassed }         = AXASDK.getConstants();
+
+```
+
 </details>
 
 
@@ -315,7 +326,7 @@ var attributeValue = "NewFeatures";
 AXASDK.setSessionAttribute(attributeName, attributeValue, (SDKError) => {
     switch (SDKError) {
       case ErrorNone:
-        console.log(`Session attribute set successfully.`);
+        console.log(`Session attribute ${attributeName}=${attributeValue} set successfully.`);
         break;
       case ErrorNoTransactionName:
       case ErrorTransactionInProgress:
@@ -334,6 +345,19 @@ AXASDK.setSessionAttribute(attributeName, attributeValue, (SDKError) => {
 -   ErrorTransactionInProgress
 -   ErrorFailedToTakeScreenshot
 -   ErrorInvalidValuesPassed
+
+To retrieve these constants include the following code prior to use:
+```
+var AXASDK = NativeModules.ReactNativeAxaMobileSdk;
+
+// Set constants for SDKError
+const { ErrorNone }                        = AXASDK.getConstants();
+const { ErrorNoTransactionName }           = AXASDK.getConstants();
+const { ErrorTransactionInProgress }       = AXASDK.getConstants();
+const { ErrorFailedToTakeScreenshot }      = AXASDK.getConstants();
+const { ErrorInvalidValuesPassed }         = AXASDK.getConstants();
+
+```
 
 </details>
 
@@ -392,15 +416,19 @@ AXASDK.isInPrivateZone((inPrivateZone) => {
 <summary>Use this API to get the SDK computed APM header in key value format.</summary>
 
 Parameters:
--  callback is a function which expects an (array of alternating key, value pairs)
 -  callback is a function which expects a dictionary or map of key, value pairs
-
 
 ```
 AXASDK.getAPMHeader((headers) => {
     if (headers) {
         console.log(`received apm headers: ${headers}`);
         // TOTO: show how to access values in this dictionary
+        // using values, keys, or entries
+        //
+        for (const [key, value] of Object.entries(headers)) {
+            console.log(`${key}: ${value}`);
+        }
+
     }
 })
 
@@ -415,28 +443,12 @@ AXASDK.getAPMHeader((headers) => {
 Parameters:
 -  data is a non-empty string in the form of "key=value".
 
-data will be appended to the header separated by a semicolon (;).
+data will be appended to the APM header separated by a semicolon (;).
 
 ```
 var newAPMData = "PrivateKey=PrivateInfo";
 
 AXASDK.addToAPMHeader(newAPMData);
-
-```
-</details>
-
-
-### setNSURLSessionDelegate( delegate )
-<details>
-<summary>Use this API to set your delegate instance to handle auth challenges.</summary>
-
-Use it when using SDKUseNetworkProtocolSwizzling option during SDK initialization.
-
-Parameters:
--  delegate an object or module which responds to NSURLSessionDelegate protocols.
-
-```
-AXASDK.setNSURLSessionDelegate(delegate);
 
 ```
 </details>
@@ -457,8 +469,9 @@ var pinnedValues = [--array of SHA1 fingerprint values--];
 AXASDK.setSSLPinningMode(pinningMode, pinnedValues);
           
 ```
+
+####Supported pinning modes:
 ```
-Supported pinning modes:
 - CAMDOSSLPinningModePublicKey OR CAMDOSSLPinningModeCertificate
         - array of certificate data (NSData from SeccertificateRef)
         - or, certificate files(.cer) to be present in the resource bundle
@@ -509,30 +522,32 @@ AXASDK.stopCurrentAndStartNewSession();
 </details>
 
 
-### startApplicationTransaction( transactionName, serviceName, completionBlock )
+### startApplicationTransaction( transactionName, serviceName, callback )
 <details>
-<summary>Use this API to start a transaction with a name.</summary>
+<summary>Use this API to start a transaction with a specific name and an optional serviceName.</summary>
 
 Parameters:
 - transactionName is a string to indicate the transaction being processed
 - serviceName is a string to indicate the service or application being applied
-- completionBlock is a function expecting a BOOL completed, and an errorString
+- callback is a function expecting a boolean completed, and a string errorString
 
-Successful execution of the method will have completed as YES and errorString as an empty string.
-In case of failure completed is set to NO and errorString contains a message with a domain, code and localizedDescription.
+If successful, completed = YES and errorString = an empty string.
+In case of failure, completed = NO and errorString = an error message.
+Error message will contain the error domain, a code, and a localized description.
 
 ```
 var transactionName = "subscription";
 var serviceName = "MyApp"";
+// serviceName may also be null
 
-AXASDK.startApplicationTransaction(transactionName, serviceName (completed, errorString) => {
+AXASDK.startApplicationTransaction(transactionName, serviceName, (completed, errorString) => {
     if (completed) {
         // everything is fine
-        console.log(`***transaction started (${completed}) ${errorString}`);
+        console.log(`***transaction ${transactionName} started (${completed}) ${errorString}`);
     } else {
         if (errorString) {
             // process error message
-            console.log(`error: ${errorString}`)
+            console.log(`***transaction error: ${errorString}`)
         }
     }
 })
@@ -541,57 +556,28 @@ AXASDK.startApplicationTransaction(transactionName, serviceName (completed, erro
 </details>
 
 
-### stopApplicationTransaction( transactionName, completionBlock )
+### stopApplicationTransaction( transactionName, failureString, callback )
 <details>
-<summary>Use this API to stop a transaction with a specific name.</summary>
-
-Parameters:
-- transactionName is a string
-- completionBlock is a function expecting a BOOL completed, and an errorString
-
-Successful execution of the method will have completed as YES and errorString as an empty string.
-In case of failure completed is set to NO and errorString contains a message with a domain, code and localizedDescription.
-
-```
-var transactionName = "subscription";
-
-AXASDK.stopApplicationTransactionWithName(transactionName, (completed, errorString) => {
-    if (completed) {
-        // everything is fine
-        console.log(`***transaction stopped (${completed}) ${errorString}`);
-    } else {
-        if (errorString) {
-            // process error message
-            console.log(`error stopping transaction: ${errorString}`)
-        }
-    }
-})
-
-```
-</details>
-
-
-
-### stopApplicationTransactionWithFailure( transactionName, failureString, completionBlock )
-<details>
-<summary>Use this API to stop a transaction with a specific name.</summary>
+<summary>Use this API to stop a transaction with a specific name and an optional failure string.</summary>
 
 Parameters:
 - transactionName is a string to indicate the transaction being processed
-- failureString is a string to indicate the name, message or type of failure
-- completionBlock is a function expecting a BOOL completed, and an errorString
+- failureString is a string to indicate the failure name, message or type
+- callback is a function expecting a boolean completed, and a string errorString
 
-Successful execution of the method will have completed as YES and errorString as an empty string.
-In case of failure completed is set to NO and errorString contains a message with a domain, code and localizedDescription.
+If successful, completed = YES and errorString = an empty string.
+In case of failure, completed = NO and errorString = an error message.
+Error message will contain the error domain, a code, and a localized description.
 
 ```
 var transactionName = "subscription";
 var failureString = "Mismatched Arguments";
+// failureString may also be null
 
-AXASDK.stopApplicationTransactionWithFailure(transactionName, failureString, (completed, errorString) => {
+AXASDK.stopApplicationTransactionWithName(transactionName, failureString, (completed, errorString) => {
     if (completed) {
         // everything is fine
-        console.log(`***transaction stopped with failure: (${completed}) ${errorString}`);
+        console.log(`***transaction ${transactionName} stopped (${completed}) ${errorString}`);
     } else {
         if (errorString) {
             // process error message
@@ -607,10 +593,14 @@ AXASDK.stopApplicationTransactionWithFailure(transactionName, failureString, (co
 
 ### setCustomerFeedback( feedback )
 <details>
-<summary>Use this API to provide feedback from the user after a crash.</summary>
+<summary>Use this API to provide feedback from the customer after a crash.</summary>
 
 Parameters:
 -  feedback is a string containing any customer feedback for the crash.
+
+The App has to register for CAMAA_CRASH_OCCURRED notification
+and collect the feedback from the user while handling the notification.
+See the [Getting Started](#getting-started) documentation for more details.
 
 ```
 var feedback = "something interesting happened";
@@ -620,29 +610,13 @@ AXASDK.setCustomerFeedback(feedback);
 </details>
 
 
-### setLocation( latitude, longitude )
-<details>
-<summary>Use this API to set Geographic or GPS Location of the Customer.</summary>
-
-Parameters:
-- latitude is a double with the geographic latitude from -90,0 to 90.0 degrees.
-- longitude is a double with the geographic longitude from -180.0 to 180.0 degrees.
-
-```
-var latitude = 34.678;
-var longitude = -122.456;
-AXASDK.setLocation(latitude, longitude);
-
-```
-</details>
-
-
 ### setCustomerLocation( postalCode, countryCode )
 <details>
-<summary>Use this API to set Location of the Customer/User.</summary>
+<summary>Use this API to set Location of the Customer/User
+using postalCode and countryCode.</summary>
 
 Parameters:
-- postalCode is a string with the postal code, e.g. zip code in US.
+- postalCode is a string with the postal code, e.g. zip code in the US.
 - countryCode is a string with the two letter international code for the country
 
 ```
@@ -654,54 +628,86 @@ AXASDK.setCustomerLocation(postalCode, countryCode);
 </details>
 
 
-### enableScreenShots( captureScreen )
+### sendScreenShot( screenName, imageQuality, callback )
 <details>
-<summary>Use this API to programmatically enable or disable automatic capturing of screenshots.</summary>
+<summary>Use this API to send a screen shot of the current screen.</summary>
 
 Parameters:
--  captureScreen is a boolean value to enable/disable automatic screen captures.
+- screenName is a string to indicate the desired name for the screen
+- imageQuality is number indicating the quality of the image between 0.0 and 1.0
+- callback is a function expecting a boolean completed, and a string errorString
 
-Normally the policy deterines whether automatic screen captures are performed.
-Use this API to override the policy, or the current setting of this flag.
+Using raw numbers for  imageQuality may produce unexpected results.
+Use the CAMAA_SCREENSHOT_QUALITY values shown below for best results.
+
+If successful, completed = YES and errorString = an empty string.
+In case of failure, completed = NO and errorString = an error message.
+Error message will contain the error domain, a code, and a localized description.
 
 ```
-AXASDK.enableScreenShots(true);
-  or
-AXASDK.enableScreenShots(false);
+var screenName = "My custom Screen";
+var imageQuality = CAMAA_SCREENSHOT_QUALITY_MEDIUM;
+
+AXASDK.sendScreenShot(screenName, imageQuality, (completed, errorString) => {
+    if (completed) {
+        // everything is fine
+        console.log(`***screen shot sent (${completed}) ${errorString}`);
+    } else {
+        if (errorString) {
+            // process error message
+            console.log(`error sending screen shot: ${errorString}`)
+        }
+    }
+})
+
+```
+
+#### imageQuality values
+The following values for imageQuality are defined:
+- CAMAA_SCREENSHOT_QUALITY_HIGH
+- CAMAA_SCREENSHOT_QUALITY_MEDIUM
+- CAMAA_SCREENSHOT_QUALITY_LOW
+- CAMAA_SCREENSHOT_QUALITY_DEFAULT
+
+To retrieve these constants include the following code prior to use:
+```
+var AXASDK = NativeModules.ReactNativeAxaMobileSdk;
+
+// Set constants for CAMAA_SCREENSHOT_QUALITY
+const { CAMAA_SCREENSHOT_QUALITY_HIGH }    = AXASDK.getConstants();
+const { CAMAA_SCREENSHOT_QUALITY_MEDIUM }  = AXASDK.getConstants();
+const { CAMAA_SCREENSHOT_QUALITY_LOW }     = AXASDK.getConstants();
+const { CAMAA_SCREENSHOT_QUALITY_DEFAULT } = AXASDK.getConstants();
 
 ```
 </details>
 
 
-### viewLoaded( viewName, loadTime, captureScreen, completionBlock )
+### viewLoaded( viewName, loadTime, callback )
 <details>
 <summary>Use this API to create a custom app flow with dynamic views.</summary>
 
 Parameters:
-- viewName is the name of the view loaded
+- viewName is the name of the view that was loaded
 - loadTime is the time it took to load the view
-- captureScreen is a boolean value, if false screen capture is disabled for the current invocation of the API call
-- completionBlock is a function expecting a BOOL completed, and an errorString
+- callback is a function expecting a boolean completed, and a string errorString
 
-The value captureScreen, can allow (if true) or disable (if false) the screen capture for this current call.
-It may not be used to enable screen capture if screen capture is not already enabled by current policy.
-
-Successful execution of the method will have completed as YES and errorString as an empty string.
-In case of failure completed is set to NO and errorString contains a message with a domain, code and localizedDescription.
+If successful, completed = YES and errorString = an empty string.
+In case of failure, completed = NO and errorString = an error message.
+Error message will contain the error domain, a code, and a localized description.
 
 ```
 var viewName = "my custom view";"
 var loadTime = 237;
-var captureScreen = false
 
-AXASDK.viewLoaded(viewName, loadTime, captureScreen, (completed, errorString) => {
+AXASDK.viewLoaded(viewName, loadTime, (completed, errorString) => {
     if (completed) {
         // everything is fine
         console.log(`***view load recorded (${completed}) ${errorString}`);
     } else {
         if (errorString) {
             // process error message
-            console.log(`error recording  view load: ${errorString}`)
+            console.log(`error recording view load: ${errorString}`)
         }
     }
 })
@@ -718,7 +724,8 @@ Parameters:
 -  viewName is Name of the view to be ignored.
 
 Screenshots and transitions of the views that are in ignore list are not captured.
-If more than one view is to be ignored, ignoreViews() may be called with a list.
+If more than one view is to be ignored, [the API call ignoreViews()](#ignoreViews)
+may be called with a list.
 
 ```
 var viewName = "view1";
@@ -737,7 +744,8 @@ Parameters:
 -  viewNames is a list (an Array) of names of the views to be ignored.
 
 Screenshots and transitions of the views that are in ignore list are not captured.
-If only a signle view name is to be ignored, ignoreView() may be called with the view name.
+If only a signle view name is to be ignored, [the API call ignoreView()](#ignoreView)
+may be called with the view name.
 
 ```
 var viewNames = ["view1", "view2", ..., "viewN"];
@@ -750,12 +758,12 @@ AXASDK.ignoreViews(viewNames);
 
 ### isScreenshotPolicyEnabled( callback )
 <details>
-<summary>Use this API to determine of automatic screenshots are enabled by policy.</summary>
+<summary>Use this API to determine if automatic screenshots are enabled by policy.</summary>
 
 Parameters:
 -  callback is a function which expects a boolean value
 
-Returns YES if screenshots are enabled by policy.
+Returns YES if screenshots are enabled by policy.  Otherwise returns NO.
 
 ```
 AXASDK.isScreenshotPolicyEnabled((isEnabled) => {
@@ -771,7 +779,7 @@ AXASDK.isScreenshotPolicyEnabled((isEnabled) => {
 </details>
 
 
-### logNetworkEvent( url, status, responseTime, inBytes, outBytes, completionBlock )
+### logNetworkEvent( url, status, responseTime, inBytes, outBytes, callback )
 <details>
 <summary>Use this API to add a custom network event in the current session.</summary>
 
@@ -781,10 +789,11 @@ Parameters:
 - responseTime is an integer value representing the response time
 - inBytes is an integer value representing the number of bytes input
 - outBytes is an integer value representing the number of bytes output
-- completionBlock is a function expecting a BOOL completed, and an errorString
+- callback is a function expecting a boolean completed, and a string errorString
 
-Successful execution of the method will have completed as YES and errorString as an empty string.
-In case of failure completed is set to NO and errorString contains a message with a domain, code and localizedDescription.
+If successful, completed = YES and errorString = an empty string.
+In case of failure, completed = NO and errorString = an error message.
+Error message will contain the error domain, a code, and a localized description.
 
 ```
 var url = "https://myserver/specific_content/";"
@@ -809,25 +818,26 @@ AXASDK.logNetworkEvent( url, status, responseTime, inBytes, outBytes, (completed
 </details>
 
 
-### logTextMetric( metricName, metricValue, attributes, completionBlock )
+### logTextMetric( textMetricName, textMetricValue, attributes, callback )
 <details>
-<summary>Use this API to add a custom text event in the current session.</summary>
+<summary>Use this API to add a custom text metric in the current session.</summary>
 
 Parameters:
-- metricName is a string metric name
-- metricValue is a string metric value
-- attributes is a Dictionary which can be used to send any extra parameters
-- completionBlock is a function expecting a BOOL completed, and an errorString
+- textMetricName is a string to indicate a text metric name
+- textMetricValue is a string to indicate a text metric value
+- attributes is a Map or Dictionary used to send any extra parameters
+- callback is a function expecting a boolean completed, and a string errorString
 
-Successful execution of the method will have completed as YES and errorString as an empty string.
-In case of failure completed is set to NO and errorString contains a message with a domain, code and localizedDescription.
+If successful, completed = YES and errorString = an empty string.
+In case of failure, completed = NO and errorString = an error message.
+Error message will contain the error domain, a code, and a localized description.
 
 ```
-var metricName = "ImageName";
-var metricValue = "Pretty Picture";
+var textMetricName = "ImageName";
+var textMetricValue = "Pretty Picture";
 var attributes = null;
 
-AXASDK.logTextMetric( metricName, metricValue, attributes, (completed, errorString) => {
+AXASDK.logTextMetric( textMetricName, textMetricValue, attributes, (completed, errorString) => {
     if (completed) {
         // everything is fine
         console.log(`***text metric logged (${completed}) ${errorString}`);
@@ -843,25 +853,28 @@ AXASDK.logTextMetric( metricName, metricValue, attributes, (completed, errorStri
 </details>
 
 
-### logNumericMetric( metricName, metricValue, attributes, completionBlock )
+### logNumericMetric( numericMetricName, numericMetricValue, attributes, callback )
 <details>
-<summary>Use this API to add a custom network event in the current session.</summary>
+<summary>Use this API to add a custom numeric metric value in the current session.</summary>
 
 Parameters:
-- metricName is a string metric name
-- metricValue is a string metric value
-- attributes is a Dictionary which can be used to send any extra parameters
-- completionBlock is a function expecting a BOOL completed, and an errorString
+- numericMetricName is a string name for a numeric metric
+- numericMetricValue is a numeric value, e.g. 3.14159, 2048.95, or 42, etc.
+- attributes is a Map or Dictionary used to send any extra parameters
+- callback is a function expecting a boolean completed, and a string errorString
 
-Successful execution of the method will have completed as YES and errorString as an empty string.
-In case of failure completed is set to NO and errorString contains a message with a domain, code and localizedDescription.
+If successful, completed = YES and errorString = an empty string.
+In case of failure, completed = NO and errorString = an error message.
+Error message will contain the error domain, a code, and a localized description.
 
 ```
-var metricName = "ImageWidth";
-var metricValue = 1080;
+var numericMetricName = "ImageWidth";
+var numericMetricValue = 1080;
+// if numericMetricValue is a string, remember to use
+//    parseFloat(numericMetricValue) or Number(numericMetricValue)
 var attributes = null;
 
-AXASDK.logTextMetric( metricName, metricValue, attributes, (completed, errorString) => {
+AXASDK.logNumericMetric( numericMetricName, numericMetricValue, attributes, (completed, errorString) => {
     if (completed) {
         // everything is fine
         console.log(`***numeric metric logged(${completed}) ${errorString}`);
@@ -877,45 +890,6 @@ AXASDK.logTextMetric( metricName, metricValue, attributes, (completed, errorStri
 </details>
 
 
-### sendScreenShot( screenName, imageQuality, completionBlock )
-<details>
-<summary>Use this API to stop a transaction with a specific name.</summary>
-
-Parameters:
-- screenName is a non-empty string for the screen name
-- imageQuality is number indicating the quality of the image between 0.0 and 1.0, default is low-quality
-- completionBlock is a function expecting a BOOL completed, and an errorString
-
-Successful execution of the method will have completed as YES and errorString as an empty string.
-In case of failure completed is set to NO and errorString contains a message with a domain, code and localizedDescription.
-
-```
-var screenName = "My custom Screen";
-var imageQuality = CAMAA_SCREENSHOT_QUALITY_MEDIUM;
-
-AXASDK.sendScreenShot(screenName, imageQuality, (completed, errorString) => {
-    if (completed) {
-        // everything is fine
-        console.log(`***screen shot sent (${completed}) ${errorString}`);
-    } else {
-        if (errorString) {
-            // process error message
-            console.log(`error sending screen shot: ${errorString}`)
-        }
-    }
-})
-
-```
-
-The following values for quality are defined:
-- CAMAA_SCREENSHOT_QUALITY_HIGH
-- CAMAA_SCREENSHOT_QUALITY_MEDIUM
-- CAMAA_SCREENSHOT_QUALITY_LOW
-- CAMAA_SCREENSHOT_QUALITY_DEFAULT
-
-</details>
-
-
 ### uploadEvents( callback )
 <details>
 <summary>Use this API to force an upload event.</summary>
@@ -925,11 +899,11 @@ An upload event sends all information collected since any previous upload event 
 Parameters:
 - callback is a function which expects a response object and an ErrorString.
 
-Response is a key,value paired object which contains:
+response is a key,value paired map or dictionary object which contains:
 - the Key 'CAMDOResponseKey'  holds any URLResponse information
 - the key 'CAMDOTotalUploadedEvents'  holds the total number of events uploaded
 
-ErrorString is empty if the API call is completed, otherwise is a localized error description
+errorString is empty if the API call is completed, otherwise is a localized error description
 ```
 AXASDK.uploadEvents((response, errorString) => {
     if (errorString) {
@@ -944,6 +918,105 @@ AXASDK.uploadEvents((response, errorString) => {
 
 ```
 </details>
+
+
+## iOS-only APIs
+The iOS version of the SDK implements a few APIs which are not available in the Android version of the SDK.
+
+### setNSURLSessionDelegate( delegate )
+<details>
+<summary>Use this API to set your delegate instance to handle auth challenges.</summary>
+
+Use it when using SDKUseNetworkProtocolSwizzling option during SDK initialization.
+
+Parameters:
+-  delegate is an iOS native object or module which responds to NSURLSessionDelegate protocols.
+
+```
+AXASDK.setNSURLSessionDelegate(delegate);
+
+```
+</details>
+
+
+### setLocation( latitude, longitude )
+<details>
+<summary>Use this API to set Geographic or GPS Location of the Customer.</summary>
+
+Parameters:
+- latitude is a double with the geographic latitude from -90,0 to 90.0 degrees.
+- longitude is a double with the geographic longitude from -180.0 to 180.0 degrees.
+
+```
+var latitude = 34.678;
+var longitude = -122.456;
+AXASDK.setLocation(latitude, longitude);
+
+```
+</details>
+
+
+### enableScreenShots( captureScreen )
+<details>
+<summary>Use this API to programmatically enable or disable automatic screen captures.</summary>
+
+Parameters:
+-  captureScreen is a boolean value to enable/disable automatic screen captures.
+
+Normally the policy determines whether automatic screen captures are performed.
+Use this API to override the policy, or the current setting of this flag.
+
+```
+AXASDK.enableScreenShots(true);
+or
+AXASDK.enableScreenShots(false);
+
+```
+</details>
+
+
+### viewLoadedWithoutScreenCapture( viewName, loadTime, callback )
+<details>
+<summary>Use this API to create a custom app flow with dynamic views disabling screen any capture.</summary>
+
+During a loadView call, on iOS only, screen captures are controlled by policy,
+or the setting of the enableScreenShots API call.
+The iOS SDK allows the calling API to disable automatic screen captures if they are currently enabled.
+This API call prevents any screen capture during the loadView call by overriding policy for this invocation.
+
+Parameters:
+- viewName is the name of the view that was loaded
+- loadTime is the time it took to load the view
+- callback is a function expecting a boolean completed, and a string errorString
+
+If successful, completed = YES and errorString = an empty string.
+In case of failure, completed = NO and errorString = an error message.
+Error message will contain the error domain, a code, and a localized description.
+
+```
+var viewName = "my custom view";"
+var loadTime = 237;
+
+AXASDK.viewLoadedWithoutScreenCapture(viewName, loadTime, (completed, errorString) => {
+    if (completed) {
+        // everything is fine
+        console.log(`***view load recorded (${completed}) ${errorString}`);
+    } else {
+        if (errorString) {
+            // process error message
+            console.log(`error recording  view load: ${errorString}`)
+        }
+    }
+})
+
+```
+</details>
+
+
+
+## Android-only APIs
+The Android version of the SDK implements a few APIs which are not available in the iOS version of the SDK.
+
 
 
 
