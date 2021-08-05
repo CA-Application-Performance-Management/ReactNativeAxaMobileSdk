@@ -202,7 +202,7 @@ RCT_EXPORT_METHOD(getCustomerId:(RCTResponseSenderBlock)callback)
  * If an empty string is passed, the customer iD is reset.
  *
  */
-RCT_EXPORT_METHOD(setCustomerId:(NSString *) customerId callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(setCustomerId:(nullable NSString *) customerId callback:(RCTResponseSenderBlock)callback)
 {
   SDKError error = [CAMDOReporter setCustomerId:customerId];
   callback(@[@(error)]);
@@ -346,7 +346,7 @@ RCT_EXPORT_METHOD(stopCurrentAndStartNewSession)
  * Error message will contain the error domain, a code, and a localized description.
  *
  */
-RCT_EXPORT_METHOD(startApplicationTransaction:(NSString *) transactionName  service:(NSString *)serviceName completionHandler:(RCTResponseSenderBlock) callback)
+RCT_EXPORT_METHOD(startApplicationTransaction:(NSString *) transactionName  service:(nullable NSString *)serviceName completionHandler:(RCTResponseSenderBlock) callback)
 {
   void (^completion)(BOOL completed, NSError *error) =  ^(BOOL completed, NSError *error) {
       callback(@[@(completed), CAMAAErrorString(error)]);
@@ -371,7 +371,7 @@ RCT_EXPORT_METHOD(startApplicationTransaction:(NSString *) transactionName  serv
  * Error message will contain the error domain, a code, and a localized description.
  *
  */
-RCT_EXPORT_METHOD(stopApplicationTransaction:(NSString *) transactionName failure:(NSString *) failureString completionHandler:(RCTResponseSenderBlock) callback)
+RCT_EXPORT_METHOD(stopApplicationTransaction:(NSString *) transactionName failure:(nullable NSString *) failureString completionHandler:(RCTResponseSenderBlock) callback)
 {
     void (^completion)(BOOL completed, NSError *error) =  ^(BOOL completed, NSError *error) {
         callback(@[@(completed), CAMAAErrorString(error)]);

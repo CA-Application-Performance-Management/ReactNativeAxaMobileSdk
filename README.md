@@ -36,7 +36,8 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
 3. iOS Setup 
     * Podfile update
     
-    If you're already using Cocoapods, goto `ios` folder from your project and specify the below pod on a single line inside your target block in a Podfile
+    If you're already using Cocoapods, goto `ios` folder from your project and specify
+    the pod below on a single line inside your target block in a Podfile
        
     ```
     pod 'react-native-axa-mobile-sdk', path: '../node_modules/react-native-axa-mobile-sdk'
@@ -161,11 +162,11 @@ const AXASDK = NativeModules.ReactNativeAxaMobileSdk;
   
   
 ## APIs
-Individual APIs interact with the SDK to perform specific tasks and reading or setting information.  All APIs are asynchronous, and returning information is achieved using a callback function or block.  The specifics can be found in the React Native documentation for [Android](https://reactnative.dev/docs/native-modules-android#callbacks) or [iOS](https://reactnative.dev/docs/native-modules-ios#callbacks) callbacks.
+Individual APIs interact with the SDK to perform specific tasks, reading, or setting information.  All APIs are asynchronous and returning information is achieved using a callback function or block.  The specifics can be found in the React Native documentation for [Android](https://reactnative.dev/docs/native-modules-android#callbacks) or [iOS](https://reactnative.dev/docs/native-modules-ios#callbacks) callbacks.
 
-A callback returns one or more value.
+A callback returns one or more values.
 
-Once you have assigned a variable or constant to the ReactNativeAxaMobileSdk module as shown in "Usage", calling individual APIs is as simple as:
+Once you have assigned a variable or constant to the ReactNativeAxaMobileSdk module as shown in ["Usage"](#usage), calling individual APIs is as simple as:
 
 ```
 AXASDK.individualAPI();
@@ -295,7 +296,7 @@ AXASDK.setCustomerId(customerId, (SDKError) => {
 
 To retrieve these constants include the following code prior to use:
 ```
-var AXASDK = NativeModules.ReactNativeAxaMobileSdk;
+const AXASDK = NativeModules.ReactNativeAxaMobileSdk;
 
 // Set constants for SDKError
 const { ErrorNone }                        = AXASDK.getConstants();
@@ -348,7 +349,7 @@ AXASDK.setSessionAttribute(attributeName, attributeValue, (SDKError) => {
 
 To retrieve these constants include the following code prior to use:
 ```
-var AXASDK = NativeModules.ReactNativeAxaMobileSdk;
+const AXASDK = NativeModules.ReactNativeAxaMobileSdk;
 
 // Set constants for SDKError
 const { ErrorNone }                        = AXASDK.getConstants();
@@ -671,7 +672,7 @@ The following values for imageQuality are defined:
 
 To retrieve these constants include the following code prior to use:
 ```
-var AXASDK = NativeModules.ReactNativeAxaMobileSdk;
+const AXASDK = NativeModules.ReactNativeAxaMobileSdk;
 
 // Set constants for CAMAA_SCREENSHOT_QUALITY
 const { CAMAA_SCREENSHOT_QUALITY_HIGH }    = AXASDK.getConstants();
@@ -923,6 +924,9 @@ AXASDK.uploadEvents((response, errorString) => {
 ## iOS-only APIs
 The iOS version of the SDK implements a few APIs which are not available in the Android version of the SDK.
 
+The best way to handle these APIs is to put them in conditionals for the platform the App is running on rather than creating separate module.ios.js or module.android.js files.  See the example code below.
+
+
 ### setNSURLSessionDelegate( delegate )
 <details>
 <summary>Use this API to set your delegate instance to handle auth challenges.</summary>
@@ -933,7 +937,11 @@ Parameters:
 -  delegate is an iOS native object or module which responds to NSURLSessionDelegate protocols.
 
 ```
-AXASDK.setNSURLSessionDelegate(delegate);
+import Platform from react;
+
+if (Platform.OS == "ios") {
+    AXASDK.setNSURLSessionDelegate(delegate);
+}
 
 ```
 </details>
@@ -948,9 +956,16 @@ Parameters:
 - longitude is a double with the geographic longitude from -180.0 to 180.0 degrees.
 
 ```
-var latitude = 34.678;
-var longitude = -122.456;
-AXASDK.setLocation(latitude, longitude);
+import Platform from react;
+
+if (Platform.OS == "ios") {
+    // use iOS specific location setting call
+    var latitude = 34.678;
+    var longitude = -122.456;
+    AXASDK.setLocation(latitude, longitude);
+} else {
+    // use Android specific location setting call
+}
 
 ```
 </details>
@@ -967,9 +982,13 @@ Normally the policy determines whether automatic screen captures are performed.
 Use this API to override the policy, or the current setting of this flag.
 
 ```
-AXASDK.enableScreenShots(true);
-or
-AXASDK.enableScreenShots(false);
+import Platform from react;
+
+if (Platform.OS == "ios") {
+    AXASDK.enableScreenShots(true);
+      // or
+    AXASDK.enableScreenShots(false);
+}
 
 ```
 </details>
@@ -977,7 +996,7 @@ AXASDK.enableScreenShots(false);
 
 ### viewLoadedWithoutScreenCapture( viewName, loadTime, callback )
 <details>
-<summary>Use this API to create a custom app flow with dynamic views disabling screen any capture.</summary>
+<summary>Use this API to create a custom app flow with dynamic views disabling any screen capture.</summary>
 
 During a loadView call, on iOS only, screen captures are controlled by policy,
 or the setting of the enableScreenShots API call.
@@ -994,20 +1013,24 @@ In case of failure, completed = NO and errorString = an error message.
 Error message will contain the error domain, a code, and a localized description.
 
 ```
-var viewName = "my custom view";"
-var loadTime = 237;
+import Platform from react;
 
-AXASDK.viewLoadedWithoutScreenCapture(viewName, loadTime, (completed, errorString) => {
-    if (completed) {
-        // everything is fine
-        console.log(`***view load recorded (${completed}) ${errorString}`);
-    } else {
-        if (errorString) {
-            // process error message
-            console.log(`error recording  view load: ${errorString}`)
+if (Platform.OS == "ios") {
+    var viewName = "my custom view";"
+    var loadTime = 237;
+
+    AXASDK.viewLoadedWithoutScreenCapture(viewName, loadTime, (completed, errorString) => {
+        if (completed) {
+            // everything is fine
+            console.log(`***view load recorded (${completed}) ${errorString}`);
+        } else {
+            if (errorString) {
+                // process error message
+                console.log(`error recording  view load: ${errorString}`)
+            }
         }
-    }
-})
+    })
+}
 
 ```
 </details>
