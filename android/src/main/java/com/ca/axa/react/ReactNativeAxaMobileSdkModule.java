@@ -23,6 +23,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.Arguments;
+import java.util.*;
 
 
 /**
@@ -52,12 +55,6 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
         return "ReactNativeAxaMobileSdk";
     }
 
-    @ReactMethod
-    public void sampleMethod(String stringArgument, int numberArgument, Callback callback) {
-        // TODO: Implement some actually useful functionality
-        callback.invoke("Received numberArgument: " + numberArgument + " stringArgument: " + stringArgument);
-    }
-
     @Nullable
     @Override
     public Map<String, Object> getConstants() {
@@ -76,32 +73,34 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * @param countryCode
      */
     @ReactMethod
-    public static void setCustomerLocation(String zipCode, String countryCode) {
-        Log.d(TAG, "@ setCustomerLocation with (zipCode,countryCode): (" + zipCode + "," + countryCode + ")");
-        CaMDOIntegration.setCustomerLocation(zipCode, countryCode);
+    public static void setCustomerLocation(String postalCode, String countryCode) {
+        Log.d(TAG, "@ setCustomerLocation with (zipCode,countryCode): (" + postalCode + "," + countryCode + ")");
+        CaMDOIntegration.setCustomerLocation(postalCode, countryCode);
     }
-
 
     /***
      * Set the location of device
      * @param location
      */
     @ReactMethod
-    public static void setCustomerLocation(Location location) {
+    public static void setLocation(Location location) {
+        Log.d(TAG, "@ setCustomerLocation with (location): "+location);
         CaMDOIntegration.setCustomerLocation(location);
     }
-
 
     /**
      * Set session attribute with the value.
      *
-     * @param key   event key
+     * @param name   event name
      * @param value value to use for the attribute
      */
     @ReactMethod
-    public static void setSessionAttribute(String key, String value) {
-        Log.d(TAG, "@ setSessionAttribute with (key,value): (" + key + "," + value + ")");
-        CaMDOIntegration.setSessionAttribute(key, value);
+    public static void setSessionAttribute(String name, String value,  Callback callback) {
+        Log.d(TAG, "@ setSessionAttribute with (name,value): (" + name + "," + value + ")");
+        CaMDOIntegration.setSessionAttribute(name, value);
+        if (callback != null) {
+            callback.invoke(true);
+        }
     }
 
     /**
@@ -113,14 +112,14 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      *                        is passed in, the app receives no callbacks.
      */
     @ReactMethod
-    public static void startApplicationTransaction(String transactionName, String serviceName, final Callback func) {
+    public static void startApplicationTransaction(String transactionName, String serviceName, final Callback callback) {
         Log.d(TAG, "@ startApplicationTransaction");
-        CaMDOCallback callback = new CaMDOCallback(new Handler()) {
+        CaMDOCallback callbackLocal = new CaMDOCallback(new Handler()) {
             @Override
             public void onError(int errorCode, Exception exception) {
                 Log.d(TAG, "@ startApplicationTransaction onError: errorCode "+errorCode+", exception: "+exception);
-                if (func != null) {
-                    func.invoke(getErrorJson(errorCode, exception));
+                if (callback != null) {
+                    callback.invoke(false, getErrorJson(errorCode, exception));
                 }   
 
             }
@@ -128,17 +127,17 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
             @Override
             public void onSuccess(Bundle data) {
                 Log.d(TAG, "@ startApplicationTransaction onSuccess: ( "+data);
-                if (func != null) {
-                    func.invoke(getBundleData(data));
+                if (callback != null) {
+                    callback.invoke(true, getBundleData(data));
                 }
             }
         };
         if(serviceName==null || serviceName.trim().length()==0){
             Log.d(TAG, "@ startApplicationTransaction no serviceName: ");
-            CaMDOIntegration.startApplicationTransaction(transactionName, callback);
+            CaMDOIntegration.startApplicationTransaction(transactionName, callbackLocal);
         }else{
             Log.d(TAG, "@ startApplicationTransaction with serviceName: ");
-            CaMDOIntegration.startApplicationTransaction(transactionName, serviceName, callback);
+            CaMDOIntegration.startApplicationTransaction(transactionName, serviceName, callbackLocal);
         }
     }
 
@@ -149,31 +148,31 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * @param transactionName name of the transaction
      * @param failure         pass <code>null</code> for a successful transaction.  If it is a failed transaction
      *                        pass a brief description about the failure
-     * @param func            The callback to the application, in case of an error/success. if null is passed
+     * @param callback            The callback to the application, in case of an error/success. if null is passed
      *                        in, the app receives no callbacks.
      */
     @ReactMethod
-    public static void stopApplicationTransaction(String transactionName, String failure, final Callback func) {
-        CaMDOCallback callback = new CaMDOCallback(new Handler()) {
+    public static void stopApplicationTransaction(String transactionName, String failure, final Callback callback) {
+        CaMDOCallback callbackInternal = new CaMDOCallback(new Handler()) {
             @Override
             public void onError(int errorCode, Exception exception) {
-                if (func != null) {
-                    func.invoke(getErrorJson(errorCode, exception));
+                if (callback != null) {
+                    callback.invoke(getErrorJson(errorCode, exception));
                 }
 
             }
 
             @Override
             public void onSuccess(Bundle data) {
-                if (func != null) {
-                    func.invoke(getBundleData(data));
+                if (callback != null) {
+                    callback.invoke(getBundleData(data));
                 }
             }
         };
         if(failure==null || failure.trim().length()==0){
-            CaMDOIntegration.stopApplicationTransaction(transactionName, callback);
+            CaMDOIntegration.stopApplicationTransaction(transactionName, callbackInternal);
         }else{
-            CaMDOIntegration.stopApplicationTransaction(transactionName, failure, callback);
+            CaMDOIntegration.stopApplicationTransaction(transactionName, failure, callbackInternal);
         }
 
     }
@@ -224,14 +223,11 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * Checks if SDK is enabled or not
      */
     @ReactMethod
-    public static void isSDKEnabled(Callback func) {
-
-        Log.d(TAG, "@ isSDKEnabled:" + CaMDOIntegration.isSDKEnabled());
+    public static void isSDKEnabled(Callback callback) {
         Boolean val = new Boolean(CaMDOIntegration.isSDKEnabled());
-        if (func != null) {
-            func.invoke(val);
+        if (callback != null) {
+            callback.invoke(val);
         }
-
     }
 
     /***
@@ -258,10 +254,10 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * @return
      */
     @ReactMethod
-    public static void isInPrivateZone(Callback func) {
+    public static void isInPrivateZone(Callback callback) {
         Boolean val = new Boolean(CaMDOIntegration.isInPrivateZone());
-        if (func != null) {
-            func.invoke(val);
+        if (callback != null) {
+            callback.invoke(val);
         }
     }
 
@@ -270,30 +266,30 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * Takes screenshot of current screen and adds an event to analytics.
      *
      * @param screenName name of screenshot
-     * @param quality quality CaMDOIntegration.CAMAA_SCREENSHOT_QUALITY_HIGH,CaMDOIntegration.CAMAA_SCREENSHOT_QUALITY_MEDIUM , CaMDOIntegration.CAMAA_SCREENSHOT_QUALITY_LOW
-     * @param func The callback to the application, in case of an error/success. if null is passed
+     * @param imageQuality quality CaMDOIntegration.CAMAA_SCREENSHOT_QUALITY_HIGH,CaMDOIntegration.CAMAA_SCREENSHOT_QUALITY_MEDIUM , CaMDOIntegration.CAMAA_SCREENSHOT_QUALITY_LOW
+     * @param callback The callback to the application, in case of an error/success. if null is passed
      *                      in, the app receives no callbacks.
      */
     @ReactMethod
-    public static void sendScreenShot(String screenName, int quality, final Callback func) {
-        Log.d(TAG, "@ sendScreenShot with name: " + screenName + " , quality: " + quality);
-        CaMDOCallback callback = new CaMDOCallback(new Handler()) {
+    public static void sendScreenShot(String screenName, int imageQuality, final Callback callback) {
+        Log.d(TAG, "@ sendScreenShot with name: " + screenName + " , quality: " + imageQuality);
+        CaMDOCallback callbackInternal = new CaMDOCallback(new Handler()) {
             @Override
             public void onError(int errorCode, Exception exception) {
-                if (func != null) {
-                    func.invoke(getErrorJson(errorCode, exception));
+                if (callback != null) {
+                    callback.invoke(getErrorJson(errorCode, exception));
                 }
 
             }
 
             @Override
             public void onSuccess(Bundle data) {
-                if (func != null) {
-                    func.invoke(getBundleData(data));
+                if (callback != null) {
+                    callback.invoke(getBundleData(data));
                 }
             }
         };
-        CaMDOIntegration.sendScreenShot(screenName, quality, callback);
+        CaMDOIntegration.sendScreenShot(screenName, imageQuality, callbackInternal);
     }
 
     /**
@@ -302,10 +298,10 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * @return true or false.
      */
     @ReactMethod
-    public static void isScreenshotPolicyEnabled(Callback func) {
+    public static void isScreenshotPolicyEnabled(Callback callback) {
         Boolean val = new Boolean(CaMDOIntegration.isScreenshotPolicyEnabled());
-        if (func != null) {
-            func.invoke(val);
+        if (callback != null) {
+            callback.invoke(val);
         }
     }
 
@@ -330,15 +326,25 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
 
 
     /**
+     * Use this method to start a new session.  If a session is already in progress, it will
+     * be ended and new session is started
+     */
+    @ReactMethod
+    public static void stopCurrentAndStartNewSession() {
+        CaMDOIntegration.stopCurrentAndStartNewSession();
+    }
+
+
+    /**
      * When a page or view is fully loaded take screen shot.
      *
-     * @param screenName
-     * @param screenLoadTime
+     * @param viewName
+     * @param loadTime
      * @param func           The callback to the application, in case of an error/success. if null is passed
      *                       in, the app receives no callbacks.
      */
     @ReactMethod
-    public static void viewLoaded(String screenName, int screenLoadTime, final Callback func) {
+    public static void viewLoaded(String viewName, int loadTime, final Callback func) {
         CaMDOCallback callback = new CaMDOCallback(new Handler()) {
             @Override
             public void onError(int errorCode, Exception exception) {
@@ -355,7 +361,7 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
                 }
             }
         };
-        CaMDOIntegration.viewLoaded(screenName, screenLoadTime, callback);
+        CaMDOIntegration.viewLoaded(viewName, loadTime, callback);
 
     }
 
@@ -363,32 +369,32 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * API to log a network event to AXA SDK.
      *
      * @param url          URL request
-     * @param statusCode   status code of the request  ex: 200,401 etc
+     * @param status   status code of the request  ex: 200,401 etc
      * @param responseTime time taken to execute the request
      * @param inBytes      bytes received as part of request.
      * @param outBytes     bytes sent as part of request.
-     * @param func         The callback to the application, in case of an error/success. if null is passed
+     * @param callback         The callback to the application, in case of an error/success. if null is passed
      *                     in, the app receives no callbacks.
      */
     @ReactMethod
-    public static void logNetworkEvent(String url, int statusCode, int responseTime, int inBytes, int outBytes, final Callback func) {
-        CaMDOCallback callback = new CaMDOCallback(new Handler()) {
+    public static void logNetworkEvent(String url, int status, int responseTime, int inBytes, int outBytes, final Callback callback) {
+        CaMDOCallback callbackInternal = new CaMDOCallback(new Handler()) {
             @Override
             public void onError(int errorCode, Exception exception) {
-                if (func != null) {
-                    func.invoke(getErrorJson(errorCode, exception));
+                if (callback != null) {
+                    callback.invoke(getErrorJson(errorCode, exception));
                 }
 
             }
 
             @Override
             public void onSuccess(Bundle data) {
-                if (func != null) {
-                    func.invoke(getBundleData(data));
+                if (callback != null) {
+                    callback.invoke(getBundleData(data));
                 }
             }
         };
-        CaMDOIntegration.logNetworkEvent(url, statusCode, responseTime, inBytes, outBytes, callback);
+        CaMDOIntegration.logNetworkEvent(url, status, responseTime, inBytes, outBytes, callbackInternal);
 
     }
 
@@ -416,65 +422,65 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * {@link CaMDOCallback#UPLOAD_EVENT_COUNT} on the Bundle returned by
      * {@link CaMDOCallback#onSuccess(android.os.Bundle)}
      *
-     * @param func The callback to the application, in case of an error/success. if null is passed
+     * @param callback The callback to the application, in case of an error/success. if null is passed
      *             in, the app receives no callbacks.
      */
     @ReactMethod
-    public static void uploadEvents(final Callback func) {
-        CaMDOCallback callback = new CaMDOCallback(new Handler()) {
+    public static void uploadEvents(final Callback callback) {
+        CaMDOCallback callbackInternal = new CaMDOCallback(new Handler()) {
             @Override
             public void onError(int errorCode, Exception exception) {
-                if (func != null) {
-                    func.invoke(getErrorJson(errorCode, exception));
+                if (callback != null) {
+                    callback.invoke(getErrorJson(errorCode, exception));
                 }
 
             }
 
             @Override
             public void onSuccess(Bundle data) {
-                if (func != null) {
-                    func.invoke(getBundleData(data));
+                if (callback != null) {
+                    callback.invoke(getBundleData(data));
                 }
             }
         };
-        CaMDOIntegration.uploadEvents(callback);
+        CaMDOIntegration.uploadEvents(callbackInternal);
     }
 
     /**
      * Logs Numeric Metric.
      *
-     * @param name
-     * @param value
+     * @param metricName
+     * @param metricValue
      * @param attributes (optional)
-     * @param func       The callback to the application, in case of an error/success. if null is passed
+     * @param callback       The callback to the application, in case of an error/success. if null is passed
      *                   in, the app receives no callbacks.
      */
     @ReactMethod
-    public static void logNumericMetrics(String name, String value, ReadableMap attributes, final Callback func) {
-        Log.d(TAG, "@ logNumericMetrics with name: " + name + ", value: " + value + ", attribs:" + attributes);
-        CaMDOCallback callback = new CaMDOCallback(new Handler()) {
+    public static void logNumericMetric(String metricName, String metricValue, ReadableMap attributes, final Callback callback) {
+        Log.d(TAG, "@ logNumericMetrics with name: " + metricName + ", value: " + metricValue + ", attribs:" + attributes);
+        CaMDOCallback callbackInternal = new CaMDOCallback(new Handler()) {
             @Override
             public void onError(int errorCode, Exception exception) {
-                if (func != null) {
-                    func.invoke(getErrorJson(errorCode, exception));
+                if (callback != null) {
+                    callback.invoke(getErrorJson(errorCode, exception));
                 }
 
             }
 
             @Override
             public void onSuccess(Bundle data) {
-                if (func != null) {
-                    func.invoke(getBundleData(data));
+                if (callback != null) {
+                    callback.invoke(getBundleData(data));
                 }
             }
         };
 
         try {
             Map<String, String> newMap = transformJSMap(attributes);
-            CaMDOIntegration.logNumericMetric(name, Double.parseDouble(value), newMap, callback);
+            CaMDOIntegration.logNumericMetric(metricName, Double.parseDouble(metricValue), newMap, callbackInternal);
         } catch (NumberFormatException e) {
-            if (func != null) {
-                func.invoke(getErrorJson(1, e));
+            if (callback != null) {
+                callback.invoke(getErrorJson(1, e));
             } else {
                 Log.e(TAG, "Error in logNumericMetrics " + e);
             }
@@ -486,47 +492,47 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
     /**
      * Logs Text Metric.
      *
-     * @param name
-     * @param value
+     * @param metricName
+     * @param metricValue
      * @param attributes (optional)
-     * @param func       The callback to the application, in case of an error/success. if null is passed
+     * @param callback       The callback to the application, in case of an error/success. if null is passed
      *                   in, the app receives no callbacks.
      */
     @ReactMethod
-    public static void logTextMetrics(String name, String value, ReadableMap attributes, final Callback func) {
-        Log.d(TAG, "@ logTextMetrics with name: " + name + ", value: " + value + ", attribs:" + attributes);
-        CaMDOCallback callback = new CaMDOCallback(new Handler()) {
+    public static void logTextMetric(String metricName, String metricValue, ReadableMap attributes, final Callback callback) {
+        Log.d(TAG, "@ logTextMetrics with name: " + metricName + ", value: " + metricValue + ", attribs:" + attributes);
+        CaMDOCallback callbackInternal = new CaMDOCallback(new Handler()) {
             @Override
             public void onError(int errorCode, Exception exception) {
-                if (func != null) {
-                    func.invoke(getErrorJson(errorCode,exception));
+                if (callback != null) {
+                    callback.invoke(getErrorJson(errorCode,exception));
                 }
 
             }
 
             @Override
             public void onSuccess(Bundle data) {
-                if (func != null) {
-                    func.invoke(getBundleData(data));
+                if (callback != null) {
+                    callback.invoke(getBundleData(data));
                 }
             }
         };
         Map<String, String> newMap = transformJSMap(attributes);
-        CaMDOIntegration.logTextMetric(name, value, newMap, callback);
+        CaMDOIntegration.logTextMetric(metricName, metricValue, newMap, callbackInternal);
 
     }
 
     /**
      * Returns Headers for tracking Network calls in APM, via the callback-function.
      *
-     * @param func Callback function, that returns a Map containing keys (header name)
+     * @param callback Callback function, that returns a Map containing keys (header name)
      *             values ( value of header )
      */
     @ReactMethod
-    public static void getAPMHeaders(Callback func) {
+    public static void getAPMHeaders(Callback callback) {
 
-        if (func != null) {
-            func.invoke(CaMDOIntegration.getAPMHeaders());
+        if (callback != null) {
+            callback.invoke(toWritableMap(CaMDOIntegration.getAPMHeaders()));
         }
     }
 
@@ -558,9 +564,12 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * Set the CustomerID
      */
     @ReactMethod
-    public static void setCustomerId(String customerId) {
-        Log.d(TAG, "@ setCustomerId with value " + customerId);
+    public static void setCustomerId(String customerId, Callback callback) {
+        Log.d(TAG, "@ setCustomerId with value " + customerId+", callback "+callback);
         CaMDOIntegration.setCustomerId(customerId);
+        if (callback != null) {
+            callback.invoke(true);
+        }
     }
 
     /**
@@ -570,8 +579,9 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public static void getDeviceId(Callback func) {
+        String deviceID = CaMDOIntegration.getDeviceId();
         if (func != null) {
-            func.invoke(CaMDOIntegration.getDeviceId());
+            func.invoke(deviceID);
         }
     }
 
@@ -587,6 +597,16 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
 
     }
 
+
+    /**
+     * Use this API to set the ssl pinning mode and array of pinned values.
+     *
+     * @param pinningMode
+     * @param pinnedValues
+     */
+    public static void setSSLPinningMode(String pinningMode, ArrayList<byte[]> pinnedValues){
+        CaMDOIntegration.setSSLPinningMode(null, pinningMode, pinnedValues);
+    }
 
 
     /***
@@ -644,11 +664,26 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
 
     private static Map<String, String> transformJSMap(ReadableMap data) {
         Map<String, String> newMap = new HashMap<>();
+        data.toHashMap();
         if (data != null) {
             for (Map.Entry<String, Object> entry : data.toHashMap().entrySet()) {
                 newMap.put(entry.getKey(), "" + entry.getValue());
             }
         }
         return newMap;
+    }
+
+    private static WritableMap toWritableMap(Map<String, String> map) {
+        WritableMap writableMap = Arguments.createMap();
+        Iterator iterator = map.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry)iterator.next();
+            Object value = pair.getValue();
+            writableMap.putString((String) pair.getKey(), (String) value);
+            iterator.remove();
+        }
+
+        return writableMap;
     }
 }
