@@ -75,7 +75,7 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
-    implementation(project(path: ":ca-maa-android-sdk-release"))
+    implementation(project(path: ":ca-maa-android-sdk-release")) //CA DX APM Core SDK bundled
 }
 
 def configureReactNativePom(def pom) {

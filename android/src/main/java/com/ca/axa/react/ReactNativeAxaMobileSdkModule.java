@@ -15,23 +15,26 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.Nullable;
+
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
+
 import java.util.*;
 
 
 /**
- * Android Native module bridge, that routes the calls to {@link CaMDOIntegration} APIs. The React
- * Native app (from its js files) will call this native module, via the JavaScript Module wrapper
- * ReactNativeAxaMobileSdkJSModule.js, to use the AXA Custom metrics APIs.
+ * Android Native module bridge, that provides AXA Custom metrics APIs.
  * <p>
  * Created by sugsh04 on 07/13/2021.
  */
@@ -84,18 +87,18 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public static void setLocation(Location location) {
-        Log.d(TAG, "@ setCustomerLocation with (location): "+location);
+        Log.d(TAG, "@ setCustomerLocation with (location): " + location);
         CaMDOIntegration.setCustomerLocation(location);
     }
 
     /**
      * Set session attribute with the value.
      *
-     * @param name   event name
+     * @param name  event name
      * @param value value to use for the attribute
      */
     @ReactMethod
-    public static void setSessionAttribute(String name, String value,  Callback callback) {
+    public static void setSessionAttribute(String name, String value, Callback callback) {
         Log.d(TAG, "@ setSessionAttribute with (name,value): (" + name + "," + value + ")");
         CaMDOIntegration.setSessionAttribute(name, value);
         if (callback != null) {
@@ -117,25 +120,25 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
         CaMDOCallback callbackLocal = new CaMDOCallback(new Handler()) {
             @Override
             public void onError(int errorCode, Exception exception) {
-                Log.d(TAG, "@ startApplicationTransaction onError: errorCode "+errorCode+", exception: "+exception);
+                Log.d(TAG, "@ startApplicationTransaction onError: errorCode " + errorCode + ", exception: " + exception);
                 if (callback != null) {
                     callback.invoke(false, getErrorJson(errorCode, exception));
-                }   
+                }
 
             }
 
             @Override
             public void onSuccess(Bundle data) {
-                Log.d(TAG, "@ startApplicationTransaction onSuccess: ( "+data);
+                Log.d(TAG, "@ startApplicationTransaction onSuccess: ( " + data);
                 if (callback != null) {
                     callback.invoke(true, getBundleData(data));
                 }
             }
         };
-        if(serviceName==null || serviceName.trim().length()==0){
+        if (serviceName == null || serviceName.trim().length() == 0) {
             Log.d(TAG, "@ startApplicationTransaction no serviceName: ");
             CaMDOIntegration.startApplicationTransaction(transactionName, callbackLocal);
-        }else{
+        } else {
             Log.d(TAG, "@ startApplicationTransaction with serviceName: ");
             CaMDOIntegration.startApplicationTransaction(transactionName, serviceName, callbackLocal);
         }
@@ -148,7 +151,7 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * @param transactionName name of the transaction
      * @param failure         pass <code>null</code> for a successful transaction.  If it is a failed transaction
      *                        pass a brief description about the failure
-     * @param callback            The callback to the application, in case of an error/success. if null is passed
+     * @param callback        The callback to the application, in case of an error/success. if null is passed
      *                        in, the app receives no callbacks.
      */
     @ReactMethod
@@ -169,9 +172,9 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
                 }
             }
         };
-        if(failure==null || failure.trim().length()==0){
+        if (failure == null || failure.trim().length() == 0) {
             CaMDOIntegration.stopApplicationTransaction(transactionName, callbackInternal);
-        }else{
+        } else {
             CaMDOIntegration.stopApplicationTransaction(transactionName, failure, callbackInternal);
         }
 
@@ -340,8 +343,8 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      *
      * @param viewName
      * @param loadTime
-     * @param func           The callback to the application, in case of an error/success. if null is passed
-     *                       in, the app receives no callbacks.
+     * @param func     The callback to the application, in case of an error/success. if null is passed
+     *                 in, the app receives no callbacks.
      */
     @ReactMethod
     public static void viewLoaded(String viewName, int loadTime, final Callback func) {
@@ -369,11 +372,11 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * API to log a network event to AXA SDK.
      *
      * @param url          URL request
-     * @param status   status code of the request  ex: 200,401 etc
+     * @param status       status code of the request  ex: 200,401 etc
      * @param responseTime time taken to execute the request
      * @param inBytes      bytes received as part of request.
      * @param outBytes     bytes sent as part of request.
-     * @param callback         The callback to the application, in case of an error/success. if null is passed
+     * @param callback     The callback to the application, in case of an error/success. if null is passed
      *                     in, the app receives no callbacks.
      */
     @ReactMethod
@@ -423,7 +426,7 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * {@link CaMDOCallback#onSuccess(android.os.Bundle)}
      *
      * @param callback The callback to the application, in case of an error/success. if null is passed
-     *             in, the app receives no callbacks.
+     *                 in, the app receives no callbacks.
      */
     @ReactMethod
     public static void uploadEvents(final Callback callback) {
@@ -451,9 +454,9 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      *
      * @param metricName
      * @param metricValue
-     * @param attributes (optional)
-     * @param callback       The callback to the application, in case of an error/success. if null is passed
-     *                   in, the app receives no callbacks.
+     * @param attributes  (optional)
+     * @param callback    The callback to the application, in case of an error/success. if null is passed
+     *                    in, the app receives no callbacks.
      */
     @ReactMethod
     public static void logNumericMetric(String metricName, String metricValue, ReadableMap attributes, final Callback callback) {
@@ -494,9 +497,9 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      *
      * @param metricName
      * @param metricValue
-     * @param attributes (optional)
-     * @param callback       The callback to the application, in case of an error/success. if null is passed
-     *                   in, the app receives no callbacks.
+     * @param attributes  (optional)
+     * @param callback    The callback to the application, in case of an error/success. if null is passed
+     *                    in, the app receives no callbacks.
      */
     @ReactMethod
     public static void logTextMetric(String metricName, String metricValue, ReadableMap attributes, final Callback callback) {
@@ -505,7 +508,7 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
             @Override
             public void onError(int errorCode, Exception exception) {
                 if (callback != null) {
-                    callback.invoke(getErrorJson(errorCode,exception));
+                    callback.invoke(getErrorJson(errorCode, exception));
                 }
 
             }
@@ -526,7 +529,7 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * Returns Headers for tracking Network calls in APM, via the callback-function.
      *
      * @param callback Callback function, that returns a Map containing keys (header name)
-     *             values ( value of header )
+     *                 values ( value of header )
      */
     @ReactMethod
     public static void getAPMHeaders(Callback callback) {
@@ -565,7 +568,7 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public static void setCustomerId(String customerId, Callback callback) {
-        Log.d(TAG, "@ setCustomerId with value " + customerId+", callback "+callback);
+        Log.d(TAG, "@ setCustomerId with value " + customerId + ", callback " + callback);
         CaMDOIntegration.setCustomerId(customerId);
         if (callback != null) {
             callback.invoke(true);
@@ -604,19 +607,19 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      * @param pinningMode
      * @param pinnedValues
      */
-    public static void setSSLPinningMode(String pinningMode, ArrayList<byte[]> pinnedValues){
+    public static void setSSLPinningMode(String pinningMode, ArrayList<byte[]> pinnedValues) {
         CaMDOIntegration.setSSLPinningMode(null, pinningMode, pinnedValues);
     }
 
 
     /***
      * Throw an exception
-     * @deprecated  Dev Only
+     * @deprecated Dev Only
      */
     @ReactMethod
     public static void throwException(int type) {
-        Log.d(TAG, "@ throwException of type:" +type);
-        switch (type){
+        Log.d(TAG, "@ throwException of type:" + type);
+        switch (type) {
             case 0:
                 throw new NullPointerException("induced NPE ");
 
@@ -627,7 +630,7 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
                 throw new UnknownError("induced UnknownError ");
 
             default:
-                    break;
+                break;
         }
     }
 
@@ -646,7 +649,7 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
     }
 
     private static String getBundleData(Bundle data) {
-        Log.d(TAG, "@ getBundleData of data:" +data);
+        Log.d(TAG, "@ getBundleData of data:" + data);
         JSONArray returnValue = new JSONArray();
         if (data != null) {
             Set<String> keys = data.keySet();
@@ -654,8 +657,9 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
                 //returnValue.put(key, data.get(key));
                 JSONObject entry = new JSONObject();
                 try {
-                    entry.put(key,""+data.get(key));
-                } catch (JSONException e) {}
+                    entry.put(key, "" + data.get(key));
+                } catch (JSONException e) {
+                }
                 returnValue.put(entry);
             }
         }
@@ -664,8 +668,8 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
 
     private static Map<String, String> transformJSMap(ReadableMap data) {
         Map<String, String> newMap = new HashMap<>();
-        data.toHashMap();
         if (data != null) {
+            data.toHashMap();
             for (Map.Entry<String, Object> entry : data.toHashMap().entrySet()) {
                 newMap.put(entry.getKey(), "" + entry.getValue());
             }
@@ -675,15 +679,16 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
 
     private static WritableMap toWritableMap(Map<String, String> map) {
         WritableMap writableMap = Arguments.createMap();
-        Iterator iterator = map.entrySet().iterator();
+        if (map != null) {
+            Iterator iterator = map.entrySet().iterator();
 
-        while (iterator.hasNext()) {
-            Map.Entry pair = (Map.Entry)iterator.next();
-            Object value = pair.getValue();
-            writableMap.putString((String) pair.getKey(), (String) value);
-            iterator.remove();
+            while (iterator.hasNext()) {
+                Map.Entry pair = (Map.Entry) iterator.next();
+                Object value = pair.getValue();
+                writableMap.putString((String) pair.getKey(), (String) value);
+                iterator.remove();
+            }
         }
-
         return writableMap;
     }
 }
