@@ -566,13 +566,15 @@ RCT_EXPORT_METHOD(logNumericMetric:(NSString *) numericMetricName withValue:(dou
  * - error is empty if the API call is completed, otherwise is a localized error description
  *
  */
+
+/**
 RCT_EXPORT_METHOD(uploadEvents:(RCTResponseSenderBlock) callback)
 {
     [CAMDOReporter uploadEventsWithCompletionHandler: ^(NSDictionary *response, NSError *error) {
       callback(@[RCTNullIfNil(response), CAMAAErrorString(error)]);
     }];
 }
-
+*/
 
 #pragma mark - iOS Only API calls
 
