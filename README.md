@@ -575,7 +575,7 @@ var transactionName = "subscription";
 var failureString = "Mismatched Arguments";
 // failureString may also be null
 
-AXASDK.stopApplicationTransactionWithName(transactionName, failureString, (completed, errorString) => {
+AXASDK.stopApplicationTransaction(transactionName, failureString, (completed, errorString) => {
     if (completed) {
         // everything is fine
         console.log(`***transaction ${transactionName} stopped (${completed}) ${errorString}`);
