@@ -33,52 +33,49 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
 2. Run the following command for automatic linking
 
     `$ react-native link react-native-axa-mobile-sdk`
-3. 
-<details>
-<summary>iOS Setup</summary>
+3. <details><summary>iOS Setup</summary>
     
     1. Podfile update
     
-    If you're already using Cocoapods, goto `ios` folder from your project and specify
-    the pod below on a single line inside your target block in a Podfile
+        If you're already using Cocoapods, goto `ios` folder from your project and specify the pod below on a single line inside your target block in a Podfile
        
-    ```
-    pod 'react-native-axa-mobile-sdk', path: '../node_modules/react-native-axa-mobile-sdk'
-      ``` 
+        ```
+        pod 'react-native-axa-mobile-sdk', path: '../node_modules/react-native-axa-mobile-sdk'
+        ``` 
         
-    Then, run the following command using the command prompt from the `ios` folder of your project
+        Then, run the following command using the command prompt from the `ios` folder of your project
 
-    ```
-    pod install
-    ```
+        ```
+        pod install
+        ```
     
     2. Drag & Drop the downloaded `xxx_camdo.plist` file into the project target
 </details>
-<details>
-<summary>Android Setup</summary>
 
-    Follow these steps to integrate the Gradle App Bundle Plugin with your Android Project.
+<details><summary>Android Setup</summary>
     
-        1. Create <project>/cadxapmsdk folder. This is the SDK root folder.
-        2. Download the CAAppBundle_SDK.zip file and extract the contents to the SDK root.
-        3. Download the <app>.plist. Prefer it to be copied to the SDK root folder.
-        4. Import and add the 'ca-maa-android-sdk-release.aar' file as a dependency.
-        5. Update the build.gradle file(s).
-            - Project Level
-                - Add maven url 'https://packages.broadcom.com/apm-agents' under repositories and classpath 'com.ca.dxapm:sdk-gradle-plugin:<version number>' under dependencies of the project level build.gradle file.
-            - App Level
-                - Add apply plugin: com.ca.dxapm.sdk.gradle.plugin at the top of the app build.gradle file.
-                - Add cadxapmsdk configuration block, specifying the absolute path to the downloaded plist.
-                - Add dependency to SDK.
-        6. Update AndroidManifest.xml file. Add the following permissions, if not already present.
-            ```
-            <uses-permission android:name='android.permission.INTERNET' />
-            <uses-permission android:name='android.permission.ACCESS_NETWORK_STATE' />
-            <uses-permission android:name='android.permission.ACCESS_WIFI_STATE' />
-            <uses-permission android:name='android.permission.ACCESS_COARSE_LOCATION' />
-            ```
+Follow these steps to integrate the Gradle App Bundle Plugin with your Android Project.
+   
+1. Create <project>/cadxapmsdk folder. This is the SDK root folder.
+2. Download the CAAppBundle_SDK.zip file and extract the contents to the SDK root.
+3. Download the <app>.plist. Prefer it to be copied to the SDK root folder.
+4. Import and add the 'ca-maa-android-sdk-release.aar' file as a dependency.
+5. Update the build.gradle file(s).
+    - Project Level
+        - Add maven url 'https://packages.broadcom.com/apm-agents' under repositories and classpath 'com.ca.dxapm:sdk-gradle-plugin:<version number>' under dependencies of the project level build.gradle file.
+    - App Level
+        - Add apply plugin: com.ca.dxapm.sdk.gradle.plugin at the top of the app build.gradle file.
+        - Add cadxapmsdk configuration block, specifying the absolute path to the downloaded plist.
+        - Add dependency to SDK.
+6. Update AndroidManifest.xml file. Add the following permissions, if not already present.
+    ```
+    <uses-permission android:name='android.permission.INTERNET' />
+    <uses-permission android:name='android.permission.ACCESS_NETWORK_STATE' />
+    <uses-permission android:name='android.permission.ACCESS_WIFI_STATE' />
+    <uses-permission android:name='android.permission.ACCESS_COARSE_LOCATION' />
+    ```
 
-        For more information, see https://techdocs.broadcom.com/us/en/ca-enterprise-software/it-operations-management/app-experience-analytics-saas/SaaS/configuring/collect-data-from-android-applications/Native-Android-Wrapping.html
+    For more information, see https://techdocs.broadcom.com/us/en/ca-enterprise-software/it-operations-management/app-experience-analytics-saas/SaaS/configuring/collect-data-from-android-applications/Native-Android-Wrapping.html
 </details>
 
 
