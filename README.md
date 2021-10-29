@@ -41,13 +41,13 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
     <summary> iOS </summary>
     
     1. Podfile update<br> If you're already using Cocoapods, goto `ios` folder from your project and specify the pod below on a single line inside your target block in a Podfile
-    ```sh
-     pod 'react-native-axa-mobile-sdk', path: '../node_modules/react-native-axa-mobile-sdk'
-    ```
-    Then, run the following command using the command prompt from the `ios` folder of your project
-    ```sh
-     pod install
-    ```
+        ```sh
+        pod 'react-native-axa-mobile-sdk', path: '../node_modules/react-native-axa-mobile-sdk'
+        ```
+        Then, run the following command using the command prompt from the `ios` folder of your project
+        ```sh
+        pod install
+        ```
     2. Download the `xxx_camdo.plist`  file and add it to your project target
     
     </details>
@@ -143,13 +143,13 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
 
 1. Add the import header `#import "CAMDOReporter.h"` to your AppDelegate.m file
 2. Initialize the CAMobileAppAnalytics sdk in `didFinishLaunchingWithOptions:` method 
-```sh
+    ```sh
     - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
     {
         [CAMDOReporter initializeSDKWithOptions:SDKLogLevelVerbose  completionHandler:nil];
         return YES;
     }
-```
+    ```
 3. Save and re-build your project
 </details>
 </blockquote>
@@ -166,7 +166,7 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
         `<name of the project>/<app_name>-Bridging-header.h`
         
 4. Initialize the CAMobileAppAnalytics sdk in `didFinishLaunchingWithOptions` method
-```sh
+    ```sh
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         //Initialize CA App Experience Analytics SDK
         CAMDOReporter.initializeSDK(options: SDKOptions.SDKLogLevelVerbose) { (completed, error) in
@@ -174,7 +174,7 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
         }
         return true
     }
-```
+    ```
 5. Save and re-build your project
 </details>
 </blockquote>
