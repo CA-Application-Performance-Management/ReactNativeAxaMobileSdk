@@ -213,12 +213,11 @@ A callback returns one or more values.
 
 Once you have assigned a variable or constant to the ReactNativeAxaMobileSdk module as shown in ["Usage"](#usage), calling individual APIs is as simple as:
 
-```
+```javascript
 AXASDK.individualAPI();
 AXASDK.individualAPI(argument1, argument2, ...);
 AXASDK.individualAPI(argument1, ..., callback);
 AXASDK.individualAPI(argument1, argument2, ..., callback);
-
 ```
 
 Follow the examples in the API descriptions below for how to use the callbacks.  The examples presented use a block with parameters instead of a function.  Either format will work in practice.
@@ -229,9 +228,8 @@ Follow the examples in the API descriptions below for how to use the callbacks. 
 
 When disabled, the SDK no longer does any tracking of the application, or user interaction.
 
-```
+```javascript
 AXASDK.disableSDK();
-
 ```
 </details>
 
@@ -241,9 +239,8 @@ AXASDK.disableSDK();
 
 The SDK is enabled by default.  You need to call this API only if you called disableSDK earlier.
 
-```
+```javascript
 AXASDK.enableSDK();
-
 ```
 </details>
 
@@ -254,7 +251,7 @@ AXASDK.enableSDK();
 Parameters:
 -  callback is a function which expects a boolean value
 
-```
+```javascript
 AXASDK.isSDKEnabled((isEnabled) => {
     if (isEnabled) {
         // enabled action
@@ -263,7 +260,6 @@ AXASDK.isSDKEnabled((isEnabled) => {
     }
     console.log(`SDK is enabled: ${isEnabled}`);
 })
-
 ```
 </details>
 
@@ -274,13 +270,12 @@ AXASDK.isSDKEnabled((isEnabled) => {
 Parameters:
 -  callback is a function which expects a string value.
 
-```
+```javascript
 AXASDK.getDeviceId((deviceId) => {
     if (deviceId) {
         console.log(`received device id: ${deviceId}`);
     }
 })
-
 ```
 </details>
 
@@ -293,13 +288,12 @@ Parameters:
 
 If the customer ID is not set, this API returns a null value.
 
-```
+```javascript
 AXASDK.getCustomerId((customerId) => {
     if (customerId) {
         console.log(`received customer id: ${customerId}`);
     }
 })
-
 ```
 </details>
 
@@ -313,7 +307,7 @@ Parameters:
 
 If an empty string is passed, the customer ID is reset. An SDKError value is returned.
 
-```
+```javascript
 var customerId = "New Customer"
 
 AXASDK.setCustomerId(customerId, (SDKError) => {
@@ -329,7 +323,6 @@ AXASDK.setCustomerId(customerId, (SDKError) => {
         console.log(`Error setting customer Id: ${SDKError}`);
     }
 })
-
 ```
 
 #### SDKError Values
@@ -340,7 +333,7 @@ AXASDK.setCustomerId(customerId, (SDKError) => {
 -   ErrorInvalidValuesPassed
 
 To retrieve these constants include the following code prior to use:
-```
+```javascript
 const AXASDK = NativeModules.ReactNativeAxaMobileSdk;
 
 // Set constants for SDKError
@@ -349,7 +342,6 @@ const { ErrorNoTransactionName }           = AXASDK.getConstants();
 const { ErrorTransactionInProgress }       = AXASDK.getConstants();
 const { ErrorFailedToTakeScreenshot }      = AXASDK.getConstants();
 const { ErrorInvalidValuesPassed }         = AXASDK.getConstants();
-
 ```
 
 </details>
@@ -365,7 +357,7 @@ Parameters:
 
 If an empty string is passed, the customer id is reset. An SDKError value is returned.
 
-```
+```javascript
 var attributeName = "ClientDemo";
 var attributeValue = "NewFeatures";
 
@@ -382,7 +374,6 @@ AXASDK.setSessionAttribute(attributeName, attributeValue, (SDKError) => {
         console.log(`Error setting session attribute: SDKError:${SDKError}`);
     }
 })
-
 ```
 
 #### SDKError Values
@@ -393,7 +384,7 @@ AXASDK.setSessionAttribute(attributeName, attributeValue, (SDKError) => {
 -   ErrorInvalidValuesPassed
 
 To retrieve these constants include the following code prior to use:
-```
+```javascript
 const AXASDK = NativeModules.ReactNativeAxaMobileSdk;
 
 // Set constants for SDKError
@@ -402,7 +393,6 @@ const { ErrorNoTransactionName }           = AXASDK.getConstants();
 const { ErrorTransactionInProgress }       = AXASDK.getConstants();
 const { ErrorFailedToTakeScreenshot }      = AXASDK.getConstants();
 const { ErrorInvalidValuesPassed }         = AXASDK.getConstants();
-
 ```
 
 </details>
@@ -418,9 +408,8 @@ The following data is not collected when the app enters a private zone:
 
 The SDK is enabled by default.  You need to call this API only if you called disableSDK earlier.
 
-```
+```javascript
 AXASDK.enterPrivateZone();
-
 ```
 </details>
 
@@ -429,9 +418,8 @@ AXASDK.enterPrivateZone();
 <details>
 <summary>Use this API to start collecting all data again.</summary>
 
-```
+```javascript
 AXASDK.exitPrivateZone();
-
 ```
 </details>
 
@@ -443,7 +431,7 @@ AXASDK.exitPrivateZone();
 Parameters:
 - callback is a function which expects a boolean value
 
-```
+```javascript
 AXASDK.isInPrivateZone((inPrivateZone) => {
     if (inPrivateZone) {
         // private zone action
@@ -452,7 +440,6 @@ AXASDK.isInPrivateZone((inPrivateZone) => {
     }
     console.log(`SDK is in private zone: ${inPrivateZone}`);
 })
-
 ```
 </details>
 
@@ -464,7 +451,7 @@ AXASDK.isInPrivateZone((inPrivateZone) => {
 Parameters:
 -  callback is a function which expects a dictionary or map of key, value pairs
 
-```
+```javascript
 AXASDK.getAPMHeader((headers) => {
     if (headers) {
         console.log(`received apm headers: ${headers}`);
@@ -477,7 +464,6 @@ AXASDK.getAPMHeader((headers) => {
 
     }
 })
-
 ```
 </details>
 
@@ -491,11 +477,10 @@ Parameters:
 
 data will be appended to the APM header separated by a semicolon (;).
 
-```
+```javascript
 var newAPMData = "PrivateKey=PrivateInfo";
 
 AXASDK.addToAPMHeader(newAPMData);
-
 ```
 </details>
 
@@ -508,16 +493,15 @@ Parameters:
 - pinningMode is one of the CAMDOSSLPinning modes described below
 - pinnedValues is an array as required by the pinning mode
 
-```
+```javascript
 var pinningMode = CAMDOSSLPinningModeFingerPrintSHA1Signature;
 var pinnedValues = [--array of SHA1 fingerprint values--];
 
-AXASDK.setSSLPinningMode(pinningMode, pinnedValues);
-          
+AXASDK.setSSLPinningMode(pinningMode, pinnedValues);       
 ```
 
 ####Supported pinning modes:
-```
+```javascript
 - CAMDOSSLPinningModePublicKey OR CAMDOSSLPinningModeCertificate
         - array of certificate data (NSData from SeccertificateRef)
         - or, certificate files(.cer) to be present in the resource bundle
@@ -535,9 +519,8 @@ AXASDK.setSSLPinningMode(pinningMode, pinnedValues);
 
 No data will be logged until the startSession API is called.
 
-```
+```javascript
 AXASDK.stopCurrentSession();
-
 ```
 </details>
 
@@ -548,9 +531,8 @@ AXASDK.stopCurrentSession();
 
 If a session is already in progress, it will be stopped and new session is started.
 
-```
+```javascript
 AXASDK.startNewSession();
-
 ```
 </details>
 
@@ -561,9 +543,8 @@ AXASDK.startNewSession();
 
 Equivalent to calling stopCurrentSession() followed by startNewSession()
 
-```
+```javascript
 AXASDK.stopCurrentAndStartNewSession();
-
 ```
 </details>
 
@@ -581,7 +562,7 @@ If successful, completed = YES and errorString = an empty string.
 In case of failure, completed = NO and errorString = an error message.
 Error message will contain the error domain, a code, and a localized description.
 
-```
+```javascript
 var transactionName = "subscription";
 var serviceName = "MyApp"";
 // serviceName may also be null
@@ -597,7 +578,6 @@ AXASDK.startApplicationTransaction(transactionName, serviceName, (completed, err
         }
     }
 })
-
 ```
 </details>
 
@@ -615,7 +595,7 @@ If successful, completed = YES and errorString = an empty string.
 In case of failure, completed = NO and errorString = an error message.
 Error message will contain the error domain, a code, and a localized description.
 
-```
+```javascript
 var transactionName = "subscription";
 var failureString = "Mismatched Arguments";
 // failureString may also be null
@@ -631,7 +611,6 @@ AXASDK.stopApplicationTransaction(transactionName, failureString, (completed, er
         }
     }
 })
-
 ```
 </details>
 
@@ -648,10 +627,9 @@ The App has to register for CAMAA_CRASH_OCCURRED notification
 and collect the feedback from the user while handling the notification.
 See the [Getting Started](#getting-started) documentation for more details.
 
-```
+```javascript
 var feedback = "something interesting happened";
 AXASDK.setCustomerFeedback(feedback);
-
 ```
 </details>
 
@@ -665,11 +643,10 @@ Parameters:
 - postalCode is a string with the postal code, e.g. zip code in the US.
 - countryCode is a string with the two letter international code for the country
 
-```
+```javascript
 var postalCode = "95200";
 var countryCode = "US";
 AXASDK.setCustomerLocation(postalCode, countryCode);
-
 ```
 </details>
 
@@ -690,7 +667,7 @@ If successful, completed = YES and errorString = an empty string.
 In case of failure, completed = NO and errorString = an error message.
 Error message will contain the error domain, a code, and a localized description.
 
-```
+```javascript
 var screenName = "My custom Screen";
 var imageQuality = CAMAA_SCREENSHOT_QUALITY_MEDIUM;
 
@@ -705,7 +682,6 @@ AXASDK.sendScreenShot(screenName, imageQuality, (completed, errorString) => {
         }
     }
 })
-
 ```
 
 #### imageQuality values
@@ -716,7 +692,7 @@ The following values for imageQuality are defined:
 - CAMAA_SCREENSHOT_QUALITY_DEFAULT
 
 To retrieve these constants include the following code prior to use:
-```
+```javascript
 const AXASDK = NativeModules.ReactNativeAxaMobileSdk;
 
 // Set constants for CAMAA_SCREENSHOT_QUALITY
@@ -724,7 +700,6 @@ const { CAMAA_SCREENSHOT_QUALITY_HIGH }    = AXASDK.getConstants();
 const { CAMAA_SCREENSHOT_QUALITY_MEDIUM }  = AXASDK.getConstants();
 const { CAMAA_SCREENSHOT_QUALITY_LOW }     = AXASDK.getConstants();
 const { CAMAA_SCREENSHOT_QUALITY_DEFAULT } = AXASDK.getConstants();
-
 ```
 </details>
 
@@ -742,8 +717,8 @@ If successful, completed = YES and errorString = an empty string.
 In case of failure, completed = NO and errorString = an error message.
 Error message will contain the error domain, a code, and a localized description.
 
-```
-var viewName = "my custom view";"
+```javascript
+var viewName = "my custom view";
 var loadTime = 237;
 
 AXASDK.viewLoaded(viewName, loadTime, (completed, errorString) => {
@@ -757,7 +732,6 @@ AXASDK.viewLoaded(viewName, loadTime, (completed, errorString) => {
         }
     }
 })
-
 ```
 </details>
 
@@ -773,11 +747,10 @@ Screenshots and transitions of the views that are in ignore list are not capture
 If more than one view is to be ignored, [the API call ignoreViews()](#ignoreViews)
 may be called with a list.
 
-```
+```javascript
 var viewName = "view1";
 
 AXASDK.ignoreView(viewName);
-
 ```
 </details>
 
@@ -793,11 +766,10 @@ Screenshots and transitions of the views that are in ignore list are not capture
 If only a signle view name is to be ignored, [the API call ignoreView()](#ignoreView)
 may be called with the view name.
 
-```
+```javascript
 var viewNames = ["view1", "view2", ..., "viewN"];
 
 AXASDK.ignoreViews(viewNames);
-
 ```
 </details>
 
@@ -811,7 +783,7 @@ Parameters:
 
 Returns YES if screenshots are enabled by policy.  Otherwise returns NO.
 
-```
+```javascript
 AXASDK.isScreenshotPolicyEnabled((isEnabled) => {
     if (isEnabled) {
          // enabled action
@@ -820,7 +792,6 @@ AXASDK.isScreenshotPolicyEnabled((isEnabled) => {
     }
     console.log(`Screenshots enabled by policy: ${isEnabled}`);
 })
-
 ```
 </details>
 
@@ -841,7 +812,7 @@ If successful, completed = YES and errorString = an empty string.
 In case of failure, completed = NO and errorString = an error message.
 Error message will contain the error domain, a code, and a localized description.
 
-```
+```javascript
 var url = "https://myserver/specific_content/";"
 var status = "OK";"
 var responseTime = 234;
@@ -859,7 +830,6 @@ AXASDK.logNetworkEvent( url, status, responseTime, inBytes, outBytes, (completed
         }
     }
 })
-
 ```
 </details>
 
@@ -878,7 +848,7 @@ If successful, completed = YES and errorString = an empty string.
 In case of failure, completed = NO and errorString = an error message.
 Error message will contain the error domain, a code, and a localized description.
 
-```
+```javascript
 var textMetricName = "ImageName";
 var textMetricValue = "Pretty Picture";
 var attributes = null;
@@ -894,7 +864,6 @@ AXASDK.logTextMetric( textMetricName, textMetricValue, attributes, (completed, e
         }
     }
 })
-
 ```
 </details>
 
@@ -913,7 +882,7 @@ If successful, completed = YES and errorString = an empty string.
 In case of failure, completed = NO and errorString = an error message.
 Error message will contain the error domain, a code, and a localized description.
 
-```
+```javascript
 var numericMetricName = "ImageWidth";
 var numericMetricValue = 1080;
 // if numericMetricValue is a string, remember to use
@@ -931,7 +900,6 @@ AXASDK.logNumericMetric( numericMetricName, numericMetricValue, attributes, (com
         }
     }
 })
-
 ```
 </details>
 
@@ -950,7 +918,7 @@ response is a key,value paired map or dictionary object which contains:
 - the key 'CAMDOTotalUploadedEvents'  holds the total number of events uploaded
 
 errorString is empty if the API call is completed, otherwise is a localized error description
-```
+```javascript
 AXASDK.uploadEvents((response, errorString) => {
     if (errorString) {
         // process error message
@@ -961,7 +929,6 @@ AXASDK.uploadEvents((response, errorString) => {
         console.log(`***uploaded ${events} events (key:${key})`);
     }
 })
-
 ```
 </details>
 
@@ -981,13 +948,12 @@ Use it when using SDKUseNetworkProtocolSwizzling option during SDK initializatio
 Parameters:
 -  delegate is an iOS native object or module which responds to NSURLSessionDelegate protocols.
 
-```
+```javascript
 import Platform from react;
 
 if (Platform.OS == "ios") {
     AXASDK.setNSURLSessionDelegate(delegate);
 }
-
 ```
 </details>
 
@@ -1000,7 +966,7 @@ Parameters:
 - latitude is a double with the geographic latitude from -90,0 to 90.0 degrees.
 - longitude is a double with the geographic longitude from -180.0 to 180.0 degrees.
 
-```
+```javascript
 import Platform from react;
 
 if (Platform.OS == "ios") {
@@ -1011,7 +977,6 @@ if (Platform.OS == "ios") {
 } else {
     // use Android specific location setting call
 }
-
 ```
 </details>
 
@@ -1026,7 +991,7 @@ Parameters:
 Normally the policy determines whether automatic screen captures are performed.
 Use this API to override the policy, or the current setting of this flag.
 
-```
+```javascript
 import Platform from react;
 
 if (Platform.OS == "ios") {
@@ -1034,7 +999,6 @@ if (Platform.OS == "ios") {
       // or
     AXASDK.enableScreenShots(false);
 }
-
 ```
 </details>
 
@@ -1057,7 +1021,7 @@ If successful, completed = YES and errorString = an empty string.
 In case of failure, completed = NO and errorString = an error message.
 Error message will contain the error domain, a code, and a localized description.
 
-```
+```javascript
 import Platform from react;
 
 if (Platform.OS == "ios") {
@@ -1076,7 +1040,6 @@ if (Platform.OS == "ios") {
         }
     })
 }
-
 ```
 </details>
 
