@@ -33,51 +33,55 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
 2. Run the following command for automatic linking
 
     `$ react-native link react-native-axa-mobile-sdk`
-3. <details><summary>iOS Setup</summary>
+3. <details>
+    <summary> Setup </summary>
     
-    1. Podfile update
+    <blockquote>
+    <details>
+    <summary> iOS </summary>
     
-        If you're already using Cocoapods, goto `ios` folder from your project and specify the pod below on a single line inside your target block in a Podfile
-       
-        ```
-        pod 'react-native-axa-mobile-sdk', path: '../node_modules/react-native-axa-mobile-sdk'
-        ``` 
-        
-        Then, run the following command using the command prompt from the `ios` folder of your project
-
-        ```
-        pod install
-        ```
-    
-    2. Drag & Drop the downloaded `xxx_camdo.plist` file into the project target
-</details>
-
-<details><summary>Android Setup</summary>
-    
-Follow these steps to integrate the Gradle App Bundle Plugin with your Android Project.
-   
-1. Create <project>/cadxapmsdk folder. This is the SDK root folder.
-2. Download the CAAppBundle_SDK.zip file and extract the contents to the SDK root.
-3. Download the <app>.plist. Prefer it to be copied to the SDK root folder.
-4. Import and add the 'ca-maa-android-sdk-release.aar' file as a dependency.
-5. Update the build.gradle file(s).
-    - Project Level
-        - Add maven url 'https://packages.broadcom.com/apm-agents' under repositories and classpath 'com.ca.dxapm:sdk-gradle-plugin:<version number>' under dependencies of the project level build.gradle file.
-    - App Level
-        - Add apply plugin: com.ca.dxapm.sdk.gradle.plugin at the top of the app build.gradle file.
-        - Add cadxapmsdk configuration block, specifying the absolute path to the downloaded plist.
-        - Add dependency to SDK.
-6. Update AndroidManifest.xml file. Add the following permissions, if not already present.
+    1. Podfile update<br> If you're already using Cocoapods, goto `ios` folder from your project and specify the pod below on a single line inside your target block in a Podfile
+    ```sh
+     pod 'react-native-axa-mobile-sdk', path: '../node_modules/react-native-axa-mobile-sdk'
     ```
-    <uses-permission android:name='android.permission.INTERNET' />
-    <uses-permission android:name='android.permission.ACCESS_NETWORK_STATE' />
-    <uses-permission android:name='android.permission.ACCESS_WIFI_STATE' />
-    <uses-permission android:name='android.permission.ACCESS_COARSE_LOCATION' />
+    Then, run the following command using the command prompt from the `ios` folder of your project
+    ```sh
+     pod install
     ```
-
+    2. Download the `xxx_camdo.plist`  file and add it to your project target
+    
+    </details>
+    </blockquote>
+    
+    <blockquote>
+    <details>
+    <summary> Android </summary>
+    
+    Follow these steps to integrate the Gradle App Bundle Plugin with your Android Project.
+    1. Create <project>/cadxapmsdk folder. This is the SDK root folder.
+    2. Download the CAAppBundle_SDK.zip file and extract the contents to the SDK root.
+    3. Download the <app>.plist. Prefer it to be copied to the SDK root folder.
+    4. Import and add the 'ca-maa-android-sdk-release.aar' file as a dependency.
+    5. Update the build.gradle file(s).
+        - Project Level
+            - Add maven url 'https://packages.broadcom.com/apm-agents' under repositories and classpath 'com.ca.dxapm:sdk-gradle-plugin:<version number>' under dependencies of the project level build.gradle file.
+        - App Level
+            - Add apply plugin: com.ca.dxapm.sdk.gradle.plugin at the top of the app build.gradle file.
+            - Add cadxapmsdk configuration block, specifying the absolute path to the downloaded plist.
+            - Add dependency to SDK.
+    6. Update AndroidManifest.xml file. Add the following permissions, if not already present.
+        ```sh
+        <uses-permission android:name='android.permission.INTERNET' />
+        <uses-permission android:name='android.permission.ACCESS_NETWORK_STATE' />
+        <uses-permission android:name='android.permission.ACCESS_WIFI_STATE' />
+        <uses-permission android:name='android.permission.ACCESS_COARSE_LOCATION' />
+        ```
     For more information, see https://techdocs.broadcom.com/us/en/ca-enterprise-software/it-operations-management/app-experience-analytics-saas/SaaS/configuring/collect-data-from-android-applications/Native-Android-Wrapping.html
+    
+    </details>
+    </blockquote>
+    
 </details>
-
 
 ### Manual installation
 
@@ -112,8 +116,8 @@ Follow these steps to integrate the Gradle App Bundle Plugin with your Android P
 <summary>Android</summary>
 
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
-  - Add `import com.reactlibrary.ReactNativeAxaMobileSdkPackage;` to the imports at the top of the file
-  - Add `new ReactNativeAxaMobileSdkPackage()` to the list returned by the `getPackages()` method
+    - Add `import com.reactlibrary.ReactNativeAxaMobileSdkPackage;` to the imports at the top of the file
+    - Add `new ReactNativeAxaMobileSdkPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
       ```
       include ':react-native-axa-mobile-sdk'
@@ -128,41 +132,55 @@ Follow these steps to integrate the Gradle App Bundle Plugin with your Android P
 
 ## Initialising the SDK in your Source code
 <details>
-<summary>iOS</summary>
-
-### Objective C
+<summary> Code Changes </summary>
+    
+<blockquote>
+<details>
+<summary> iOS </summary>
+<blockquote>    
+<details>
+<summary> Objective C </summary>
 
 1. Add the import header `#import "CAMDOReporter.h"` to your AppDelegate.m file
-
 2. Initialize the CAMobileAppAnalytics sdk in `didFinishLaunchingWithOptions:` method 
-
-```
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    [CAMDOReporter initializeSDKWithOptions:SDKLogLevelVerbose  completionHandler:nil];
-    return YES;
-}
+```sh
+    - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+    {
+        [CAMDOReporter initializeSDKWithOptions:SDKLogLevelVerbose  completionHandler:nil];
+        return YES;
+    }
 ```
 3. Save and re-build your project
+</details>
+</blockquote>
+    
+<blockquote>
+<details>
+<summary> Swift </summary>
 
-### Swift
 1. Add a header file with the file name format as `<app_name>-Bridging-header.h`.
-2. Add the import header `#import "CAMDOReporter.h"` to your `<app_name>-Bridging-header.h` file. 
-3. Add the `<app_name>-Bridging-header.h` file to Swift Compiler - Code Generation section
-in the Build Settings.
-`<name of the project>/<app_name>-Bridging-header.h`
-4. Initialize the CAMobileAppAnalytics sdk in `didFinishLaunchingWithOptions` method 
-``` 
-func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    //Initialize CA App Experience Analytics SDK
-    CAMDOReporter.initializeSDK(options: SDKOptions.SDKLogLevelVerbose) { (completed, error) in
         
+2. Add the import header `#import "CAMDOReporter.h"` to your `<app_name>-Bridging-header.h` file. 
+        
+3. Add the `<app_name>-Bridging-header.h` file to Swift Compiler - Code Generation section in the Build Settings.
+        `<name of the project>/<app_name>-Bridging-header.h`
+        
+4. Initialize the CAMobileAppAnalytics sdk in `didFinishLaunchingWithOptions` method
+```sh
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        //Initialize CA App Experience Analytics SDK
+        CAMDOReporter.initializeSDK(options: SDKOptions.SDKLogLevelVerbose) { (completed, error) in
+
+        }
+        return true
     }
-    return true
-}
 ```
 5. Save and re-build your project
+</details>
+</blockquote>
 
+</details>
+</blockquote>
 </details>
 
 ## Updation
@@ -182,11 +200,11 @@ Follow these steps to updgrade the `react native axa mobile sdk` in your project
 
 ## Usage
 ```javascript
+import { NativeModules } from 'react-native';
 import ReactNativeAxaMobileSdk from 'react-native-axa-mobile-sdk';
 
 const AXASDK = NativeModules.ReactNativeAxaMobileSdk;
 ```
-  
   
 ## APIs
 Individual APIs interact with the SDK to perform specific tasks, reading, or setting information.  All APIs are asynchronous and returning information is achieved using a callback function or block.  The specifics can be found in the React Native documentation for [Android](https://reactnative.dev/docs/native-modules-android#callbacks) or [iOS](https://reactnative.dev/docs/native-modules-ios#callbacks) callbacks.
