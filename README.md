@@ -14,8 +14,8 @@ Check out our [documentation](https://techdocs.broadcom.com/content/broadcom/tec
 
 ## Requirements
 -  iOS
-    1. Xcode 11 or higher
-    2. iOS 8.0 or higher
+    1. Xcode 12 or higher
+    2. iOS 9.0 or higher
 -  Android
 
 ## Installation
