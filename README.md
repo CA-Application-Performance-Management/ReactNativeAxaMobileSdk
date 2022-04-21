@@ -15,7 +15,7 @@ Check out our [documentation](https://techdocs.broadcom.com/content/broadcom/tec
 ## Requirements
 -  iOS
     1. Xcode 11 or higher
-    2. iOS 8.0 or higher
+    2. iOS 9.0 or higher
 -  Android
 
 ## Installation
@@ -201,7 +201,6 @@ Follow these steps to updgrade the `react native axa mobile sdk` in your project
 ## Usage
 ```javascript
 import { NativeModules } from 'react-native';
-import ReactNativeAxaMobileSdk from 'react-native-axa-mobile-sdk';
 
 const AXASDK = NativeModules.ReactNativeAxaMobileSdk;
 ```
