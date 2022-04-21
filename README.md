@@ -20,19 +20,19 @@ Check out our [documentation](https://techdocs.broadcom.com/content/broadcom/tec
 
 ## Installation
 
-Follow these steps to integrate the `react native axa mobile sdk` in your project
+Follow these steps to integrate the `react native axa mobile sdk` which has ios xcframework support in your project
 
 ### Automatic installation
 1. Run the following command from your React Native project directory
 
-    `$ yarn add react-native-axa-mobile-sdk`
+    `$ yarn add react-native-axa-mobile-sdk-xcframework`
     
     or
     
-    `$ npm install react-native-axa-mobile-sdk --save`
+    `$ npm install react-native-axa-mobile-sdk-xcframework --save`
 2. Run the following command for automatic linking
 
-    `$ react-native link react-native-axa-mobile-sdk`
+    `$ react-native link react-native-axa-mobile-sdk-xcframework`
 3. <details>
     <summary> Setup </summary>
     
@@ -42,7 +42,7 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
     
     1. Podfile update<br> If you're already using Cocoapods, goto `ios` folder from your project and specify the pod below on a single line inside your target block in a Podfile
         ```sh
-        pod 'react-native-axa-mobile-sdk', path: '../node_modules/react-native-axa-mobile-sdk'
+        pod 'react-native-axa-mobile-sdk-xcframework', path: '../node_modules/react-native-axa-mobile-sdk-xcframework'
         ```
         Then, run the following command using the command prompt from the `ios` folder of your project
         ```sh
@@ -90,7 +90,7 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
 <summary>iOS</summary>
 
 1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-axa-mobile-sdk` and add `ReactNativeAxaMobileSdk.xcodeproj`
+2. Go to `node_modules` ➜ `react-native-axa-mobile-sdk-xcframework` and add `ReactNativeAxaMobileSdk.xcodeproj`
 3. In XCode, in the project navigator, select your project. Add `libReactNativeAxaMobileSdk.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
 
@@ -99,7 +99,7 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
     If you're already using Cocoapods, goto `ios` folder from your project and specify the below pod on a single line inside your target block in a Podfile
    
    ```
-   pod 'react-native-axa-mobile-sdk', path: '../node_modules/react-native-axa-mobile-sdk'
+   pod 'react-native-axa-mobile-sdk-xcframework', path: '../node_modules/react-native-axa-mobile-sdk-xcframework'
    ```
     
     Then, run the following command using the command prompt from the `ios` folder of your project
@@ -120,8 +120,8 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
     - Add `new ReactNativeAxaMobileSdkPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
       ```
-      include ':react-native-axa-mobile-sdk'
-      project(':react-native-axa-mobile-sdk').projectDir = new File(rootProject.projectDir,     '../node_modules/react-native-axa-mobile-sdk/android')
+      include ':react-native-axa-mobile-sdk-xcframework'
+      project(':react-native-axa-mobile-sdk-xcframework').projectDir = new File(rootProject.projectDir,     '../node_modules/react-native-axa-mobile-sdk-xcframework/android')
       ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
       ```
@@ -185,15 +185,15 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
 
 ## Updation
 
-Follow these steps to updgrade the `react native axa mobile sdk` in your project
+Follow these steps to updgrade the `react native axa mobile sdk` which has ios xcframework support in your project
 
 1. Run the following command from your React Native project directory
 
-    `$ yarn upgrade react-native-axa-mobile-sdk`
+    `$ yarn upgrade react-native-axa-mobile-sdk-xcframework`
     
     or
     
-    `$ npm update react-native-axa-mobile-sdk --save`
+    `$ npm update react-native-axa-mobile-sdk-xcframework --save`
 
 2. Run `$ pod update` command from the `ios` folder.
 
@@ -201,7 +201,6 @@ Follow these steps to updgrade the `react native axa mobile sdk` in your project
 ## Usage
 ```javascript
 import { NativeModules } from 'react-native';
-import ReactNativeAxaMobileSdk from 'react-native-axa-mobile-sdk';
 
 const AXASDK = NativeModules.ReactNativeAxaMobileSdk;
 ```

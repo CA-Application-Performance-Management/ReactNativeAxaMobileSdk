@@ -1,5 +1,5 @@
 {
-  "name": "react-native-axa-mobile-sdk",
+  "name": "react-native-axa-mobile-sdk-xcframework",
   "title": "React Native AXA Mobile Sdk",
   "version": "2022.3.0",
   "description": "CA App Experience Analytic native SDK's react native supplement for using custom metrics",
@@ -10,7 +10,7 @@
     "index.js",
     "ios",
     "LICENSE",
-    "react-native-axa-mobile-sdk.podspec"
+    "react-native-axa-mobile-sdk-xcframework.podspec"
   ],
   "homepage": "https://techdocs.broadcom.com/content/broadcom/techdocs/us/en/ca-enterprise-software/it-operations-management/app-experience-analytics-saas/SaaS/configuring/collect-data-from-ios-applications.html",
   "scripts": {
@@ -20,8 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github_account/react-native-axa-mobile-sdk.git",
-    "baseUrl": "https://github.com/github_account/react-native-axa-mobile-sdk"
+    "url": "https://github.com/CA-Application-Performance-Management/ReactNativeAxaMobileSdk/tree/xcframework"
   },
   "keywords": [
     "react-native",
