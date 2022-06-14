@@ -22,7 +22,7 @@ def safeExtGet(prop, fallback) {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 buildscript {
     // The Android Gradle plugin is only required when opening the android folder stand-alone.
@@ -67,6 +67,9 @@ repositories {
         // Android JSC is installed from npm
         url "$rootDir/../node_modules/jsc-android/dist"
     }
+    maven {
+        url 'https://packages.broadcom.com/apm-agents'
+    }
     google()
     mavenCentral()
     jcenter()
@@ -75,7 +78,7 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
-    implementation(project(path: ":ca-maa-android-sdk-release")) //CA DX APM Core SDK bundled
+    implementation 'com.ca.dxapm:sdk-core:2022.3.0.3@aar'
 }
 
 def configureReactNativePom(def pom) {
@@ -109,17 +112,7 @@ def configureReactNativePom(def pom) {
 afterEvaluate { project ->
     // some Gradle build hooks ref:
     // https://www.oreilly.com/library/view/gradle-beyond-the/9781449373801/ch03.html
-    task androidJavadoc(type: Javadoc) {
-        source = android.sourceSets.main.java.srcDirs
-        classpath += files(android.bootClasspath)
-        classpath += files(project.getConfigurations().getByName('compile').asList())
-        include '**/*.java'
-    }
 
-    task androidJavadocJar(type: Jar, dependsOn: androidJavadoc) {
-        classifier = 'javadoc'
-        from androidJavadoc.destinationDir
-    }
 
     task androidSourcesJar(type: Jar) {
         classifier = 'sources'
@@ -138,15 +131,14 @@ afterEvaluate { project ->
 
     artifacts {
         archives androidSourcesJar
-        archives androidJavadocJar
     }
 
     task installArchives(type: Upload) {
         configuration = configurations.archives
-        repositories.mavenDeployer {
-            // Deploy to react-native-event-bridge/maven, ready to publish to npm
-            repository url: "file://${projectDir}/../android/maven"
-            configureReactNativePom pom
+        repositories.maven {
+            url = uri("${rootProject.projectDir}/maven-repo")
         }
+
+
     }
 }

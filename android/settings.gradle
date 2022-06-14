@@ -1,3 +1,2 @@
-include ':ca-maa-android-sdk-release'
 include ":"
 include ":src"
