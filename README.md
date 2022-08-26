@@ -1048,6 +1048,13 @@ if (Platform.OS == "ios") {
 The Android version of the SDK implements a few APIs which are not available in the iOS version of the SDK.
 
 
-
+## Build this Native Module (dev)
+- npm install
+- npm pack (to test locally)
+- Test the packaged archive with sample appliaction, by adding something like this in packages.json file :
+```
+ "react-native-axa-mobile-sdk": "file:../../GitHome/AXA/ReactNativeAxaMobileSdk/react-native-axa-mobile-sdk-2022.8.1.tgz",
+ ```
+- npm publish (publish to NPM)
 
 
