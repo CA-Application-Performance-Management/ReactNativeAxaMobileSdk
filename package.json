@@ -1,7 +1,7 @@
 {
   "name": "react-native-axa-mobile-sdk-xcframework",
   "title": "React Native AXA Mobile Sdk",
-  "version": "2023.9.1",
+  "version": "23.12.1",
   "description": "CA App Experience Analytic native SDK's react native supplement for using custom metrics",
   "main": "index.js",
   "files": [
