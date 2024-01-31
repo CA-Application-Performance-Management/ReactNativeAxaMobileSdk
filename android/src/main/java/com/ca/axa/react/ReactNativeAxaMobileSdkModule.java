@@ -459,7 +459,7 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      *                    in, the app receives no callbacks.
      */
     @ReactMethod
-    public static void logNumericMetric(String metricName, String metricValue, ReadableMap attributes, final Callback callback) {
+    public static void logNumericMetric(String metricName, Double metricValue, ReadableMap attributes, final Callback callback) {
         Log.d(TAG, "@ logNumericMetrics with name: " + metricName + ", value: " + metricValue + ", attribs:" + attributes);
         CaMDOCallback callbackInternal = new CaMDOCallback(new Handler()) {
             @Override
@@ -480,7 +480,7 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
 
         try {
             Map<String, String> newMap = transformJSMap(attributes);
-            CaMDOIntegration.logNumericMetric(metricName, Double.parseDouble(metricValue), newMap, callbackInternal);
+            CaMDOIntegration.logNumericMetric(metricName, metricValue, newMap, callbackInternal);
         } catch (NumberFormatException e) {
             if (callback != null) {
                 callback.invoke(getErrorJson(1, e));
