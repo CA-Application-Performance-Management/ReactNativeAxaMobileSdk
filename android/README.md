@@ -9,6 +9,11 @@ If you want to publish the lib as a maven dependency, follow these steps before 
 ndk.dir=/Users/{username}/Library/Android/sdk/ndk-bundle
 sdk.dir=/Users/{username}/Library/Android/sdk
 ```
-3. Delete the `maven` folder
-4. Run `./gradlew installArchives`
-5. Verify that latest set of generated files is in the maven folder with the correct version number
+3. This can publish to local maven repository for testing
+4. Run `./gradlew publishToMavenLocal`
+5. Once task is completed inside <USER_DIR>/.m2/repository/com/ca/axa/react/react-native-axa-mobile-sdk-xcframework folder with the same version with which react-native-axa-mobile-sdk package is installed.
+
+Note: This version uses below versions and can be used by application using react-native >= 0.71.0
+react : 18.2.0
+react-native: 0.71.0
+AGP: 7.4.2 
