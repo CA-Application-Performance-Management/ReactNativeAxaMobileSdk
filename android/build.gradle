@@ -12,9 +12,8 @@
 
 // These defaults should reflect the SDK versions used by
 // the minimum React Native version supported.
-def DEFAULT_COMPILE_SDK_VERSION = 28
-def DEFAULT_BUILD_TOOLS_VERSION = '29.0.2'
-def DEFAULT_MIN_SDK_VERSION = 16
+def DEFAULT_COMPILE_SDK_VERSION = 31
+def DEFAULT_MIN_SDK_VERSION = 21
 def DEFAULT_TARGET_SDK_VERSION = 28
 
 def safeExtGet(prop, fallback) {
@@ -24,6 +23,10 @@ def safeExtGet(prop, fallback) {
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
+
+import groovy.json.JsonSlurper
+
+
 buildscript {
     // The Android Gradle plugin is only required when opening the android folder stand-alone.
     // This avoids unnecessary downloads and potential conflicts when the library is included as a
@@ -32,19 +35,17 @@ buildscript {
     if (project == rootProject) {
         repositories {
             google()
-            jcenter()
+            mavenCentral()
         }
         dependencies {
-            // This should reflect the Gradle plugin version used by
-            // the minimum React Native version supported.
-            classpath 'com.android.tools.build:gradle:4.0.0'
+            classpath 'com.android.tools.build:gradle:7.4.2'
         }
     }
 }
 
 android {
-    compileSdkVersion safeExtGet('compileSdkVersion', DEFAULT_COMPILE_SDK_VERSION)
-    buildToolsVersion safeExtGet('buildToolsVersion', DEFAULT_BUILD_TOOLS_VERSION)
+    compileSdk safeExtGet('compileSdkVersion', DEFAULT_COMPILE_SDK_VERSION)
+    namespace 'com.ca.axa.react'
     defaultConfig {
         minSdkVersion safeExtGet('minSdkVersion', DEFAULT_MIN_SDK_VERSION)
         targetSdkVersion safeExtGet('targetSdkVersion', DEFAULT_TARGET_SDK_VERSION)
@@ -54,91 +55,54 @@ android {
     lintOptions {
         abortOnError false
     }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+        singleVariant('debug') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 repositories {
-    // ref: https://www.baeldung.com/maven-local-repository
-    mavenLocal()
-    maven {
-        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-        url "$rootDir/../node_modules/react-native/android"
-    }
-    maven {
-        // Android JSC is installed from npm
-        url "$rootDir/../node_modules/jsc-android/dist"
-    }
+    google()
+    mavenCentral()
     maven {
         url 'https://packages.broadcom.com/apm-agents'
     }
-    google()
-    mavenCentral()
-    jcenter()
 }
 
 dependencies {
-    //noinspection GradleDynamicVersion
-    implementation 'com.facebook.react:react-native:+'  // From node_modules
+    implementation 'com.facebook.react:react-android:0.71.0'
     implementation 'com.ca.dxapm:sdk-core:24.1.2@aar'
 }
 
-def configureReactNativePom(def pom) {
-    def packageJson = new groovy.json.JsonSlurper().parseText(file('../package.json').text)
 
-    pom.project {
-        name packageJson.title
-        artifactId packageJson.name
-        version = packageJson.version
-        group = "com.ca.axa.react"
-        description packageJson.description
-        url packageJson.repository.baseUrl
-
-        licenses {
-            license {
-                name packageJson.license
-                url packageJson.repository.baseUrl + '/blob/master/' + packageJson.licenseFilename
-                distribution 'repo'
-            }
-        }
-
-        developers {
-            developer {
-                id packageJson.author.username
-                name packageJson.author.name
-            }
-        }
-    }
+tasks.register('androidSourcesJar', Jar) {
+    from android.sourceSets.main.java.srcDirs
+    include '**/*.java'
 }
 
-afterEvaluate { project ->
-    // some Gradle build hooks ref:
-    // https://www.oreilly.com/library/view/gradle-beyond-the/9781449373801/ch03.html
 
-
-    task androidSourcesJar(type: Jar) {
-        classifier = 'sources'
-        from android.sourceSets.main.java.srcDirs
-        include '**/*.java'
-    }
-
-    android.libraryVariants.all { variant ->
-        def name = variant.name.capitalize()
-        def javaCompileTask = variant.javaCompileProvider.get()
-
-        task "jar${name}"(type: Jar, dependsOn: javaCompileTask) {
-            from javaCompileTask.destinationDir
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                def packageJson = new JsonSlurper().parseText(file('../package.json').text)
+                println "Artifact:" + packageJson.name
+                groupId "com.ca.axa.react"
+                artifactId packageJson.name
+                version packageJson.version
+                artifact(androidSourcesJar)
+            }
         }
-    }
-
-    artifacts {
-        archives androidSourcesJar
-    }
-
-    task installArchives(type: Upload) {
-        configuration = configurations.archives
-        repositories.maven {
-            url = uri("${rootProject.projectDir}/maven-repo")
+        repositories {
+            maven {
+                url = file("${System.env.HOME}/.m2/repository/")
+            }
         }
-
-
     }
 }
