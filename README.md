@@ -129,6 +129,33 @@ Follow these steps to integrate the `react native axa mobile sdk` in your projec
       ```
 </details>
 
+### Android: Network monitoring through Fetch API for AGP >= 8.0
+
+If AGP(Android Gradle Plugin) version of the react-native application is >=8.0 , HTTP calls triggered through Fetch API can be intercepted using any of the below two options
+
+- Call `LogNetworkEvent()` API wherever network requests are made
+
+or
+
+- Add `com.ca.android.app.MAAInterceptor` to the OkHttpClientBuilder in your code, so that all network calls will be intercepted.
+
+    For example if flipper is used you can add `MAAInterceptor` to the `ReactNativeFlipper.java` file as below
+    
+    - Add axa `sdk-core` dependency in app level `build.gradle` as below
+    ```sh
+        compileOnly("com.ca.dxapm:sdk-core:23.11.1.1@aar") //version will be the same as react-native-axa-mobile-sdk plugin
+    ```
+            
+    - In the ReactNativeFlipper.java file add MAAInterceptor to the OkHttpClientBuilder object as below
+    ```sh
+        NetworkingModule.setCustomClientBuilder(
+            new NetworkingModule.CustomClientBuilder() {
+                @Override
+                public void apply(OkHttpClient.Builder builder) {
+                    builder.addInterceptor(new com.ca.android.app.MAAInterceptor());
+                }
+            }); 
+    ```   
 
 ## Initialising the SDK in your Source code
 <details>

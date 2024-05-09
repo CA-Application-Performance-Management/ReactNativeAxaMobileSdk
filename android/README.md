@@ -17,5 +17,5 @@ Note: This version uses below versions and supports applications using react-nat
 ```
 react : 18.2.0
 react-native: 0.71.0
-AGP: 7.4.2 
+AGP: 8.1.2
 ```
