@@ -16,4 +16,4 @@ sdk.dir=/Users/{username}/Library/Android/sdk
 Note: This version uses below versions and can be used by application using react-native >= 0.71.0
 react : 18.2.0
 react-native: 0.71.0
-AGP: 7.4.2 
+AGP: 8.0 
