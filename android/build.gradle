@@ -77,7 +77,7 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-android:0.71.0'
-    implementation 'com.ca.dxapm:sdk-core:24.9.1@aar'
+    implementation 'com.ca.dxapm:sdk-core:24.11.2@aar'
 }
 
 
