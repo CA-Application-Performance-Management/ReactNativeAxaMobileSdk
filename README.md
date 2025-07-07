@@ -1075,6 +1075,29 @@ if (Platform.OS == "ios") {
 ## Android-only APIs
 The Android version of the SDK implements a few APIs which are not available in the iOS version of the SDK.
 
+### logHandledException(name, message, stacktrace)
+<details>
+<summary>Use this API to log handled exception captured in try-catch blocks.
+</summary>
+
+Parameters:
+-  name is a string to indicate a error name.
+-  message is a string to indicate a error message
+-  stacktrace is a string to indicate a stacktrace
+
+
+```javascript
+import Platform from react;
+
+try {
+
+} catch(e) {
+    if (Platform.OS == "android") {
+        AXASDK.logHandledException(e.name, e.message, e.stack);
+    }
+}
+```
+</details>
 
 
 
