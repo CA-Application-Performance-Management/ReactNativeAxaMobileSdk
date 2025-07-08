@@ -32,9 +32,6 @@ import com.facebook.react.bridge.Arguments;
 
 import java.util.*;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
 /**
  * Android Native module bridge, that provides AXA Custom metrics APIs.
  * <p>
@@ -629,45 +626,7 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void logHandledException(String name, String message, String stacktrace) {
-        try {
-            // Default values for parsing
-            String methodName = "UnknownMethod";
-            String className = "UnknownClass";
-            int line = -1;
-
-            if (stacktrace != null && !stacktrace.trim().isEmpty()) {
-                String[] stackLines = stacktrace.split("\n");
-                for (String lineEntry : stackLines) {                    
-                    Pattern pattern = Pattern.compile("at\\s+(.*?)\\s+\\((.+?):(\\d+):(\\d+)\\)");
-                    Matcher matcher = pattern.matcher(lineEntry.trim());
-                    if (matcher.find()) {
-                        methodName = matcher.group(1);
-                        className = matcher.group(2);
-                        line = Integer.parseInt(matcher.group(3));
-                        break;
-                    }
-                }
-            }
-
-
-            String fullMessage = (name != null ? name : "Error") + ": " + (message != null ? message : "Unknown message") + "\n" + stacktrace;
-
-            JSONObject errorInfo = new JSONObject();
-            errorInfo.put("Origin", "javascript");  
-            errorInfo.put("Type",name);
-            errorInfo.put("Message",message);
-            errorInfo.put("Stacktrace",stacktrace);
-            errorInfo.put("Class",className);
-            errorInfo.put("Method", methodName);
-            errorInfo.put("Line", line);
-            String jsonErrorInfo = errorInfo.toString(); // 2 = indentation level
-
-            Throwable cause = new Throwable(jsonErrorInfo);
-            Exception wrapped = new Exception(fullMessage, cause);
-            CaMDOIntegration.logHandledException(wrapped);
-        } catch (JSONException e) {
-            Log.e("ReactNativeAxaMobileSdk", "Error while handling exception", e);
-        }
+        CaMDOIntegration.logHandledExceptionFromJS(name != null ? name : "Error", message != null ? message : "Unknown message", stacktrace);
     }
 
     /***
