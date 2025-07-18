@@ -49,6 +49,15 @@ Follow these steps to integrate the `react native axa mobile sdk` which has ios 
         pod install
         ```
     2. Download the `xxx_camdo.plist`  file and add it to your project target
+    3. Add the following permissions to your application `Info.plist`, if not already present.
+        ```sh
+        <key>NSLocationWhenInUseUsageDescription</key>
+            <string>This allows us to track and gather analytic data for improving the app experience.</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+            <string>This allows us to track and gather analytic data for improving the app experience.</string>
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+            <string>This allows us to track and gather analytic data for improving the app experience.</string>
+        ```
     
     </details>
     </blockquote>
@@ -109,6 +118,15 @@ Follow these steps to integrate the `react native axa mobile sdk` which has ios 
     ```
 
 6. Drag & Drop the downloaded `xxx_camdo.plist` file into the Supporting files
+7. Add the following permissions to your application `Info.plist`, if not already present.
+    ```sh
+    <key>NSLocationWhenInUseUsageDescription</key>
+        <string>This allows us to track and gather analytic data for improving the app experience.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+        <string>This allows us to track and gather analytic data for improving the app experience.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>This allows us to track and gather analytic data for improving the app experience.</string>
+    ```
 </details>
 
 
