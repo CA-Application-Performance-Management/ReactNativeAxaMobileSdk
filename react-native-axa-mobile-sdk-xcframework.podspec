@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   s.source_files = 'ios/*.{h,c,cc,cpp,m,mm,swift}'
 
   s.dependency "React"
-  s.dependency 'CAMobileAppAnalytics/xcframework', '~> 25.8.2'
+  s.dependency 'CAMobileAppAnalytics/xcframework', '~> 25.9.1'
 
   s.preserve_paths = 'LICENSE', 'README.md', 'package.json', 'index.js'
 
