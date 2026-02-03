@@ -70,9 +70,7 @@ android {
 repositories {
     google()
     mavenCentral()
-    maven {
-        url 'https://packages.broadcom.com/apm-agents'
-    }
+    mavenLocal()
 }
 
 dependencies {
