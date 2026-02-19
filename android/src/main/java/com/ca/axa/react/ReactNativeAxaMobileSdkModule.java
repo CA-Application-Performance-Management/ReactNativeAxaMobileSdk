@@ -32,7 +32,6 @@ import com.facebook.react.bridge.Arguments;
 
 import java.util.*;
 
-
 /**
  * Android Native module bridge, that provides AXA Custom metrics APIs.
  * <p>
@@ -611,6 +610,25 @@ public class ReactNativeAxaMobileSdkModule extends ReactContextBaseJavaModule {
         CaMDOIntegration.setSSLPinningMode(null, pinningMode, pinnedValues);
     }
 
+
+    /**
+     * Use this API to log handled exception captured in try-catch blocks
+     * @param name is a string to indicate a error name 
+     * @param message is a string to indicate a error message
+     * @param stacktrace is a string to indicate a stacktrace
+     * 
+     * Expected input from JavaScript:
+     * try {
+     * 
+     * } catch (e) {
+     *      NativeModules.ReactNativeAxaMobileSdk.logHandledException(e.name, e.message, e.stack);
+     * }
+     * 
+     */
+    @ReactMethod
+    public void logHandledException(String name, String message, String stacktrace) {
+        CaMDOIntegration.logHandledExceptionFromJS(name != null ? name : "Error", message != null ? message : "Unknown message", stacktrace);
+    }
 
     /***
      * Throw an exception
