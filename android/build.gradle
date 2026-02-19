@@ -71,14 +71,11 @@ repositories {
     google()
     mavenCentral()
     mavenLocal()
-    maven {
-        url 'https://packages.broadcom.com/apm-agents'
-    }
 }
 
 dependencies {
     implementation 'com.facebook.react:react-android:0.71.0'
-    implementation 'com.ca.dxapm:sdk-core:99.1.3@aar'
+    implementation 'com.ca.dxapm:sdk-core:26.1.1@aar'
 }
 
 

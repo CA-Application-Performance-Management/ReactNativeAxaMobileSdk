@@ -17,23 +17,24 @@ Check out our [documentation](https://techdocs.broadcom.com/content/broadcom/tec
     1. Xcode 12 or higher
     2. iOS 9.0 or higher
 -  Android
+    - **For Android only:** Download the android-sdk-gradleplugin-core.zip, extract it, and merge its contents into your local Maven repository (typically `~/.m2/repository` on macOS/Linux or `%USERPROFILE%\.m2\repository` on Windows).
 
 ## Installation
 
 Follow these steps to integrate the `react native axa mobile sdk` which has ios xcframework support in your project
 
 ### Automatic installation
-1. Run the following command from your React Native project directory
-
-    `$ yarn add react-native-axa-mobile-sdk-xcframework`
-    
-    or
-    
-    `$ npm install react-native-axa-mobile-sdk-xcframework --save`
-2. Run the following command for automatic linking
+1. In the AXA dashboard, download the **react-native-axa-mobile-sdk-xcframework** zip file folder provided for React Native.
+2. Extract the zip to a location on your local machine (for example, `~/plugins/react-native-axa-mobile-sdk-xcframework`).
+3. From your project root, install the plugin from the extracted path:
+    ```bash
+    npm install /path/to/extracted/plugin-folder
+    ```
+    Replace `/path/to/extracted/plugin-folder` with the actual path where you extracted the zip (for example, `~/plugins/react-native-axa-mobile-sdk-xcframework`).
+3. Run the following command for automatic linking (use the path from step 2):
 
     `$ react-native link react-native-axa-mobile-sdk-xcframework`
-3. <details>
+4. <details>
     <summary> Setup </summary>
     
     <blockquote>
@@ -49,6 +50,15 @@ Follow these steps to integrate the `react native axa mobile sdk` which has ios 
         pod install
         ```
     2. Download the `xxx_camdo.plist`  file and add it to your project target
+    3. Add the following permissions to your application `Info.plist`, if not already present.
+        ```sh
+        <key>NSLocationWhenInUseUsageDescription</key>
+            <string>This allows us to track and gather analytic data for improving the app experience.</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+            <string>This allows us to track and gather analytic data for improving the app experience.</string>
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+            <string>This allows us to track and gather analytic data for improving the app experience.</string>
+        ```
     
     </details>
     </blockquote>
@@ -64,7 +74,7 @@ Follow these steps to integrate the `react native axa mobile sdk` which has ios 
     4. Import and add the 'ca-maa-android-sdk-release.aar' file as a dependency.
     5. Update the build.gradle file(s).
         - Project Level
-            - Add maven url 'https://packages.broadcom.com/apm-agents' under repositories and classpath 'com.ca.dxapm:sdk-gradle-plugin:<version number>' under dependencies of the project level build.gradle file.
+            - Add mavenLocal() under repositories and classpath 'com.ca.dxapm:sdk-gradle-plugin:<version number>' under dependencies of the project level build.gradle file.
         - App Level
             - Add apply plugin: com.ca.dxapm.sdk.gradle.plugin at the top of the app build.gradle file.
             - Add cadxapmsdk configuration block, specifying the absolute path to the downloaded plist.
@@ -96,10 +106,10 @@ Follow these steps to integrate the `react native axa mobile sdk` which has ios 
 
 5. Podfile update
 
-    If you're already using Cocoapods, goto `ios` folder from your project and specify the below pod on a single line inside your target block in a Podfile
+    If you're already using Cocoapods, goto `ios` folder from your project and specify the below pod on a single line inside your target block in a Podfile (replace `<path-to-extracted-plugin>` with the path where you extracted the plugin)
    
    ```
-   pod 'react-native-axa-mobile-sdk-xcframework', path: '../node_modules/react-native-axa-mobile-sdk-xcframework'
+   pod 'react-native-axa-mobile-sdk-xcframework', path: '<path-to-extracted-plugin>'
    ```
     
     Then, run the following command using the command prompt from the `ios` folder of your project
@@ -109,6 +119,15 @@ Follow these steps to integrate the `react native axa mobile sdk` which has ios 
     ```
 
 6. Drag & Drop the downloaded `xxx_camdo.plist` file into the Supporting files
+7. Add the following permissions to your application `Info.plist`, if not already present.
+    ```sh
+    <key>NSLocationWhenInUseUsageDescription</key>
+        <string>This allows us to track and gather analytic data for improving the app experience.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+        <string>This allows us to track and gather analytic data for improving the app experience.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>This allows us to track and gather analytic data for improving the app experience.</string>
+    ```
 </details>
 
 
@@ -118,10 +137,10 @@ Follow these steps to integrate the `react native axa mobile sdk` which has ios 
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
     - Add `import com.reactlibrary.ReactNativeAxaMobileSdkPackage;` to the imports at the top of the file
     - Add `new ReactNativeAxaMobileSdkPackage()` to the list returned by the `getPackages()` method
-2. Append the following lines to `android/settings.gradle`:
+2. Append the following lines to `android/settings.gradle` (replace `<path-to-extracted-plugin>` with the path where you extracted the plugin):
       ```
       include ':react-native-axa-mobile-sdk-xcframework'
-      project(':react-native-axa-mobile-sdk-xcframework').projectDir = new File(rootProject.projectDir,     '../node_modules/react-native-axa-mobile-sdk-xcframework/android')
+      project(':react-native-axa-mobile-sdk-xcframework').projectDir = new File(rootProject.projectDir, '<path-to-extracted-plugin>/android')
       ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
       ```
@@ -213,18 +232,15 @@ or
 
 ## Updation
 
-Follow these steps to updgrade the `react native axa mobile sdk` which has ios xcframework support in your project
+1. Download the latest **android-sdk-gradleplugin-core.zip**, extract it, and merge its contents into your local Maven repository (typically `~/.m2/repository` on macOS/Linux or `%USERPROFILE%\.m2\repository` on Windows), replacing the existing gradle plugin.
 
-1. Run the following command from your React Native project directory
+2. Download the latest react-native-axa-mobile-sdk-xcframework.zip, extract it to your local machine (you can replace the previous extraction or use a new path), then reinstall from the updated path:
 
-    `$ yarn upgrade react-native-axa-mobile-sdk-xcframework`
-    
-    or
-    
-    `$ npm update react-native-axa-mobile-sdk-xcframework --save`
-
-2. Run `$ pod update` command from the `ios` folder.
-
+    ```bash
+    npm uninstall react-native-axa-mobile-sdk-xcframework
+    npm install /path/to/extracted/plugin-folder
+    ```
+3. Goto **ios** folder and Run **pod update 'CAMobileAppAnalytics/xcframework'** to get the latest version of pod.
 
 ## Usage
 ```javascript
